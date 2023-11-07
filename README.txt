@@ -1,0 +1,1 @@
+Empower your home with solar energy using the Omnik Solar Panels App for Homey. Keep track of your solar panel output in real-time, delve into your energy stats with Insights, and set up automation for your home appliances using triggers activated by your solar production. Encounter any setup challenges? Check the FAQ or documentation on our homepage to assist you.

@@ -1,0 +1,34 @@
+{
+  "name": {
+    "en": "Omnik"
+  },
+  "platforms": [
+    "local"
+  ],
+  "pair": [
+    {
+      "id": "pair",
+      "navigation": {
+        "next": "validate"
+      }
+    },
+    {
+      "id": "validate",
+      "template": "loading"
+    },
+    {
+      "id": "add_device"
+    }
+  ],
+  "images": {
+    "large": "./drivers/omnik-local/assets/images/large.jpg",
+    "small": "./drivers/omnik-local/assets/images/small.jpg"
+  },
+  "class": "solarpanel",
+  "capabilities": [
+    "measure_power",
+    "meter_power",
+    "measure_voltage",
+    "measure_temperature"
+  ]
+}

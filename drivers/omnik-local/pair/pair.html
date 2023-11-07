@@ -1,0 +1,122 @@
+<base target="_parent"/>
+
+<div class="form-wrapper">
+    <form class="homey-form">
+        <fieldset class="homey-form-fieldset">
+            <div class="homey-form-group">
+                <label class="homey-form-label" for="ip_address" data-i18n="pair.omnik-local.ip_address">IP
+                    address</label>
+                <input class="homey-form-input"
+                       id="ip_address"
+                       oninput="ipAddressChanged(this.value)"
+                       type="text"
+                       minlength="7"
+                       maxlength="15"
+                       pattern="^((\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$"
+                       placeholder="192.168.0.0"
+                       value=""/>
+            </div>
+            <div class="homey-form-group">
+                <label class="homey-form-label" for="wifi_sn" data-i18n="pair.omnik-local.wifi_sn">WiFi S/N</label>
+                <input class="homey-form-input"
+                       id="wifi_sn"
+                       oninput="wifiSnChanged(this.value)"
+                       type="text"
+                       pattern="[0-9]{10}"
+                       placeholder="000000000"
+                       value=""/>
+            </div>
+            <p id="wifi_sn_hint" class="alert hint hidden"></p>
+        </fieldset>
+    </form>
+
+    <div class="footer">
+        <p class="alert help">
+            <span data-i18n="pair.help.need_help_pairing">Need help pairing?</span>
+            <a href="https://homey-omnik.gitbook.io/en/pairing"
+               data-i18n="pair.help.click_here_documentation">Click here to view the documentation.</a>
+        </p>
+    </div>
+</div>
+
+<script type="application/javascript">
+    Homey.setTitle(Homey.__("pair.omnik-local.title"));
+    Homey.setSubtitle(Homey.__("pair.omnik-local.subtitle"));
+
+    Homey.on("alert", function (message) {
+        Homey.alert(message);
+    });
+
+    Homey.emit("getIpAddress").then(function (ipAddress) {
+        document.getElementById("ip_address").value = ipAddress;
+    });
+
+    Homey.emit("getWifiSn").then(function (wifiSn) {
+        document.getElementById("wifi_sn").value = wifiSn;
+    });
+
+    function ipAddressChanged(value) {
+        Homey.emit("setIpAddress", value);
+    }
+
+    function wifiSnChanged(value) {
+        Homey.emit("setWifiSn", Number(value));
+
+        const hintElement = document.getElementById("wifi_sn_hint");
+
+        if (value !== undefined && value.length >= 3 && !isVerifiedSn(value)) {
+            hintElement.classList.remove('hidden')
+            document.getElementById("wifi_sn_hint").innerText = Homey.__("pair.omnik-local.unverified_sn_message")
+        } else {
+            hintElement.classList.add('hidden')
+            document.getElementById("wifi_sn_hint").innerText = ''
+        }
+    }
+
+    function isVerifiedSn(value) {
+        let verifiedSerialNumbers = ['160', '161', '604'];
+
+        return verifiedSerialNumbers.find((verifiedValue) => value.startsWith(verifiedValue)) !== undefined
+    }
+</script>
+
+<style type="text/css">
+    .form-wrapper {
+        width: 100%;
+        height: 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .footer {
+        margin-top: auto;
+        padding-top: 1.5rem;
+    }
+
+    .alert {
+        position: relative;
+        padding: 0.75rem 1.25rem;
+        margin-bottom: 1rem;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+    }
+
+    .hint {
+        color: #004085;
+        background-color: #cce5ff;
+        border-color: #b8daff;
+    }
+
+    .help {
+        color: #383d41;
+        background-color: #f4f5f5;
+        border-color: #e4e5e7;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>

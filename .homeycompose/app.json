@@ -1,0 +1,68 @@
+{
+  "id": "codes.lucasvdh.omnik",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "brandColor": "#0c1845",
+  "name": {
+    "en": "Omnik"
+  },
+  "description": {
+    "en": "Let the sun power your home",
+    "nl": "Laat de zon je huis van stroom voorzien"
+  },
+  "category": "energy",
+  "platforms": [
+    "local"
+  ],
+  "tags": {
+    "en": [
+      "solar",
+      "panels",
+      "pv",
+      "omnik"
+    ],
+    "nl": [
+      "zonnepanelen",
+      "solar",
+      "pv",
+      "omnik"
+    ]
+  },
+  "images": {
+    "xlarge": "./assets/images/xlarge.png",
+    "large": "./assets/images/large.png",
+    "small": "./assets/images/small.png"
+  },
+  "author": {
+    "name": "Lucas van der Have",
+    "email": "lucasvdhave@gmail.com"
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Lucas van der Have",
+        "email": "lucasvdhave@gmail.com"
+      }
+    ],
+    "translators": [
+      {
+        "name": "Lucas van der Have",
+        "email": "lucasvdhave@gmail.com"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "lucasvdh"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/lucasvdh/codes.lucasvdh.omnik/issues"
+  },
+  "source": "https://github.com/lucasvdh/codes.lucasvdh.omnik",
+  "homepage": "https://homey-omnik.gitbook.io/en/",
+  "support": "https://homey-omnik.gitbook.io/en/faq"
+}

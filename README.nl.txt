@@ -1,0 +1,1 @@
+Geef uw huis een boost met de Omnik Zonnepanelen App voor Homey. Houd de opbrengst van uw zonnepanelen in real-time bij, verdiep u in uw energiestatistieken met Insights, en stel automatisering in voor uw huishoudelijke apparaten met triggers geactiveerd door uw zonne-energieproductie. Problemen met de installatie? Bekijk de FAQ of documentatie op onze homepage om u te helpen."
