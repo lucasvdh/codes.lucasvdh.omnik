@@ -10,5 +10,17 @@
     "es": "Primera versión",
     "da": "Første version",
     "pl": "Pierwsza wersja"
+  },
+  "1.1.0": {
+    "en": "New app images and driver icon",
+    "nl": "Nieuwe app afbeeldingen en driver icoon",
+    "de": "Neue App-Bilder und Treiber-Symbol",
+    "fr": "Nouvelles images d'application et icône du pilote",
+    "it": "Nuove immagini dell'app e icona del driver",
+    "sv": "Nya app-bilder och drivrutinsikon",
+    "no": "Nye app-bilder og driverikon",
+    "es": "Nuevas imágenes de la aplicación e icono del controlador",
+    "da": "Nye app-billeder og driverikon",
+    "pl": "Nowe obrazy aplikacji i ikona sterownika"
   }
 }
