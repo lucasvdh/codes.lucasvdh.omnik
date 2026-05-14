@@ -82,5 +82,17 @@
     "es": "Corrección de emparejamiento para el firmware WiFi más reciente de omnik5000tl2 (H4.01.51MW) que expone los datos de estado a través de myDeviceArray en lugar de webData.",
     "da": "Parringsfiks for nyere omnik5000tl2 WiFi-firmware (H4.01.51MW) der eksponerer statusdata via myDeviceArray i stedet for webData.",
     "pl": "Poprawka parowania dla nowszego oprogramowania WiFi omnik5000tl2 (H4.01.51MW), które udostępnia dane statusu przez myDeviceArray zamiast webData."
+  },
+  "1.5.2": {
+    "en": "Diagnostic reports now run as a background task with live progress, so reports for slow or unreachable inverters no longer time out.",
+    "nl": "Diagnoserapporten draaien nu als achtergrondtaak met live voortgang, zodat rapporten voor trage of onbereikbare inverters niet meer timeouten.",
+    "de": "Diagnoseberichte laufen jetzt als Hintergrundaufgabe mit Live-Fortschritt, sodass Berichte für langsame oder nicht erreichbare Wechselrichter nicht mehr abbrechen.",
+    "fr": "Les rapports de diagnostic s'exécutent désormais en tâche de fond avec progression en direct, donc les rapports pour les onduleurs lents ou injoignables n'expirent plus.",
+    "it": "I rapporti diagnostici ora vengono eseguiti come attività in background con avanzamento in tempo reale, quindi i rapporti per inverter lenti o irraggiungibili non vanno più in timeout.",
+    "sv": "Diagnosrapporter körs nu som en bakgrundsuppgift med live-status, så rapporter för långsamma eller oåtkomliga växelriktare slutar inte längre med timeout.",
+    "no": "Diagnoserapporter kjører nå som en bakgrunnsoppgave med live-fremdrift, så rapporter for trege eller utilgjengelige vekselrettere får ikke lenger tidsavbrudd.",
+    "es": "Los informes de diagnóstico ahora se ejecutan como tarea en segundo plano con progreso en vivo, por lo que los informes para inversores lentos o inalcanzables ya no expiran.",
+    "da": "Diagnoserapporter kører nu som en baggrundsopgave med live fremgang, så rapporter for langsomme eller utilgængelige invertere ikke længere får tidsudløb.",
+    "pl": "Raporty diagnostyczne działają teraz jako zadanie w tle z postępem na żywo, więc raporty dla wolnych lub nieosiągalnych inwerterów nie wygasają już z powodu limitu czasu."
   }
 }

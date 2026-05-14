@@ -30,6 +30,23 @@ export class ParseError extends Error {
   }
 }
 
+/**
+ * Raised when the WiFi module responds but no inverter is currently reporting
+ * to it — typically because the inverter has shut itself down due to
+ * insufficient DC voltage (night, dawn, heavy cloud). Distinct from ParseError
+ * so the pairing / runtime layer can render a user-friendly message instead of
+ * the generic "unsupported firmware" copy.
+ */
+export class InverterAsleepError extends Error {
+  constructor(public readonly wifiStickSn?: string) {
+    super(
+      wifiStickSn
+        ? `WiFi module ${wifiStickSn} is reachable but no inverter data is available (inverter likely asleep)`
+        : "WiFi module is reachable but no inverter data is available (inverter likely asleep)",
+    );
+  }
+}
+
 export interface InverterData {
   inverterName: string;
   currentPower: number;

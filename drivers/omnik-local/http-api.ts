@@ -1,6 +1,7 @@
 import http from "http";
 import {
   HostUnreachableError,
+  InverterAsleepError,
   InverterData,
   ParseError,
   TimeoutError,
@@ -94,14 +95,28 @@ export class OmnikHttpApi {
 
   private async fetchStatusJs(): Promise<StatusJsPayload> {
     const body = await this.httpGet("/js/status.js");
-    return {
-      meta: {
-        m2mMid: this.extractVar(body, "m2mMid"),
-        version: this.extractVar(body, "version"),
-        wlanMac: this.extractVar(body, "wlanMac"),
-      },
-      webData: this.extractWebData(body),
+    const meta = {
+      m2mMid: this.extractVar(body, "m2mMid"),
+      version: this.extractVar(body, "version"),
+      wlanMac: this.extractVar(body, "wlanMac"),
     };
+    try {
+      return { meta, webData: this.extractWebData(body) };
+    } catch (err) {
+      // When the WiFi stick is alive (m2mMid present) but no inverter data is
+      // exposed — typically `myDeviceArray = new Array();` with `yz_device_num`
+      // = "0" — the inverter is asleep, not the firmware unsupported.
+      if (err instanceof ParseError && meta.m2mMid && this.isInverterAsleep(body)) {
+        throw new InverterAsleepError(meta.m2mMid);
+      }
+      throw err;
+    }
+  }
+
+  private isInverterAsleep(body: string): boolean {
+    const emptyArray = /myDeviceArray\s*=\s*new\s+Array\s*\(\s*\)\s*;/.test(body);
+    const zeroDevices = /yz_device_num\s*=\s*"0"/.test(body);
+    return emptyArray || zeroDevices;
   }
 
   static parseInverterData(webData: string[]): InverterData {

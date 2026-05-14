@@ -35,6 +35,7 @@
         "host_unreachable": "Kunne ikke nå Omnik-inverteren på denne IP-adressen. Sørg for at IP-adressen er korrekt og inverteren er på.",
         "connection_timed_out": "Tidsavbrudd ved tilkobling til din Omnik-inverter.",
         "unexpected_response": "Mottok et uventet svar fra din Omnik-inverter. Appen støtter det eldre 0x68-protokollet på TCP/8899 og /js/status.js HTTP-reserve. Del gjerne din modell på GitHub hvis ingen av dem fungerer.",
+        "inverter_asleep": "WiFi-modulen svarer, men det finnes ingen omformerdata. Omformeren er sannsynligvis i hvilemodus — Omnik-omformere slår seg av ved utilstrekkelig sollys. Prøv igjen når solen er oppe og omformeren produserer.",
         "auth_failed": "Autentisering mislyktes. Sjekk brukernavn og passord.",
         "adding_device": "Noe gikk galt under tillegg av enheten.\n\nDet kan være at inverteren allerede er lagt til som en enhet."
       }

@@ -74,14 +74,17 @@ interface ProbeRunner {
   (): Promise<unknown>;
 }
 
+export type ProgressCallback = (message: string) => void;
+
 export async function generateDeviceReport(opts: {
   device: Homey.Device;
   appVersion: string;
   homeyFirmwareVersion?: string;
   homeyPlatform?: string;
   network?: NetworkSnapshot;
+  onProgress?: ProgressCallback;
 }): Promise<DiagnosticReport> {
-  const { device, appVersion, homeyFirmwareVersion, homeyPlatform, network } = opts;
+  const { device, appVersion, homeyFirmwareVersion, homeyPlatform, network, onProgress } = opts;
   const settings = device.getSettings() as Record<string, unknown>;
   const ip = String(settings.ip ?? "");
   const wifiSn = settings.wifi_sn ? Number(settings.wifi_sn) : Number((device.getData() as { id?: number }).id);
@@ -93,6 +96,7 @@ export async function generateDeviceReport(opts: {
     ip,
     wifiSn: Number.isFinite(wifiSn) ? wifiSn : undefined,
     auth,
+    onProgress,
   });
 
   return {
@@ -120,10 +124,11 @@ export async function generateIpReport(opts: {
   homeyFirmwareVersion?: string;
   homeyPlatform?: string;
   network?: NetworkSnapshot;
+  onProgress?: ProgressCallback;
 }): Promise<DiagnosticReport> {
-  const { ip, appVersion, homeyFirmwareVersion, homeyPlatform, network } = opts;
+  const { ip, appVersion, homeyFirmwareVersion, homeyPlatform, network, onProgress } = opts;
 
-  const { probes, statusJs } = await runAllProbes({ ip });
+  const { probes, statusJs } = await runAllProbes({ ip, onProgress });
 
   return {
     generatedAt: new Date().toISOString(),
@@ -174,9 +179,13 @@ async function runAllProbes(opts: {
   ip: string;
   wifiSn?: number;
   auth?: { user: string; password: string };
+  onProgress?: ProgressCallback;
 }): Promise<{ probes: ProbeResult[]; statusJs: StatusJsSnapshot[] }> {
-  const { ip, auth } = opts;
+  const { ip, auth, onProgress } = opts;
   let { wifiSn } = opts;
+  const progress = (msg: string) => onProgress?.(msg);
+
+  progress(`Checking TCP/8899 reachability and capturing /js/status.js on ${ip}…`);
 
   // Phase 1: TCP reachability + raw /js/status.js capture. The raw capture
   // always returns the response body (even when the typed parser would
@@ -231,6 +240,7 @@ async function runAllProbes(opts: {
   // Phase 2: TCP binary protocol (only meaningful with a known S/N).
   const phase2Tasks: Array<Promise<ProbeResult>> = [];
   if (wifiSn && wifiSn > 0) {
+    progress(`Probing TCP binary protocol with S/N ${wifiSn}…`);
     const sn = wifiSn;
     phase2Tasks.push(
       runProbe(
@@ -248,6 +258,7 @@ async function runAllProbes(opts: {
       ),
     );
   } else {
+    progress("Skipping TCP binary probe — no WiFi-stick S/N available.");
     phase2Tasks.push(
       runProbe(
         "TCP binary protocol",
@@ -261,6 +272,7 @@ async function runAllProbes(opts: {
     );
   }
   const phase2 = await Promise.all(phase2Tasks);
+  progress("All probes done, rendering report…");
 
   return { probes: [...phase1, ...phase2], statusJs };
 }

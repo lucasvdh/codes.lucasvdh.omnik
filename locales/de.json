@@ -35,6 +35,7 @@
         "host_unreachable": "Konnte den Omnik-Wechselrichter unter dieser IP-Adresse nicht erreichen. Stellen Sie sicher, dass die IP-Adresse korrekt und der Wechselrichter eingeschaltet ist.",
         "connection_timed_out": "Es ist ein Timeout beim Verbinden mit Ihrem Omnik-Wechselrichter aufgetreten.",
         "unexpected_response": "Unerwartete Antwort vom Omnik-Wechselrichter erhalten. Die App unterstützt das Legacy-0x68-Protokoll auf TCP/8899 und den /js/status.js-HTTP-Fallback. Bitte teilen Sie Ihr Modell auf GitHub, wenn keines davon funktioniert.",
+        "inverter_asleep": "Das WiFi-Modul antwortet, aber es sind keine Wechselrichterdaten verfügbar. Der Wechselrichter befindet sich vermutlich im Ruhezustand — Omnik-Wechselrichter schalten sich bei unzureichendem Sonnenlicht ab. Versuchen Sie es erneut, sobald die Sonne aufgegangen ist und der Wechselrichter Strom erzeugt.",
         "auth_failed": "Authentifizierung fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.",
         "adding_device": "Beim Hinzufügen des Geräts ist ein Fehler aufgetreten.\n\nEs könnte sein, dass der Wechselrichter bereits als Gerät hinzugefügt wurde."
       }

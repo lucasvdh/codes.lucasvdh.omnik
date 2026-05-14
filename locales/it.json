@@ -35,6 +35,7 @@
         "host_unreachable": "Impossibile raggiungere l'inverter Omnik all'indirizzo IP indicato. Assicurati che l'indirizzo IP sia corretto e l'inverter sia acceso.",
         "connection_timed_out": "Timeout durante la connessione al tuo inverter Omnik.",
         "unexpected_response": "Risposta inattesa dal tuo inverter Omnik. L'app supporta il protocollo legacy 0x68 su TCP/8899 e il fallback HTTP /js/status.js. Condividi il tuo modello su GitHub se nessuno dei due funziona.",
+        "inverter_asleep": "Il modulo WiFi risponde ma non sono disponibili dati dell'inverter. L'inverter è probabilmente in stand-by — gli inverter Omnik si spengono quando la luce solare è insufficiente. Riprova quando il sole sarà alto e l'inverter starà producendo.",
         "auth_failed": "Autenticazione fallita. Verifica il nome utente e la password.",
         "adding_device": "Qualcosa è andato storto durante l'aggiunta del dispositivo.\n\nPotrebbe essere che l'inverter sia già stato aggiunto come dispositivo."
       }

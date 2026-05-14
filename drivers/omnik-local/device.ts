@@ -47,6 +47,7 @@ class OmnikLocal extends Inverter {
     const updates: Partial<DeviceSettings> = {};
     if (!settings.protocol) updates.protocol = "tcp";
     if (!settings.wifi_sn) updates.wifi_sn = String(this.getData().id);
+    if (!settings.offline_behavior) updates.offline_behavior = "keep_available";
     if (Object.keys(updates).length === 0) return;
     try {
       await this.setSettings(updates);
@@ -168,8 +169,45 @@ class OmnikLocal extends Inverter {
       }
     }
 
-    this.error(`Unavailable: ${this.describe(lastError)}`);
-    await this.markUnavailable(`Error retrieving data: ${this.describe(lastError)}`);
+    await this.handlePollFailure(lastError);
+  }
+
+  /**
+   * Decide what to do when polling has exhausted its retries.
+   *
+   * With `offline_behavior = keep_available` (default) we assume the inverter
+   * has simply shut down because there's no DC voltage — typical at night for
+   * solar inverters whose WiFi module loses power along with them. Keep the
+   * device available and set measure_power to 0 so:
+   *   - Insights graphs land cleanly at 0 W instead of leaving a stale value
+   *   - production_stopped Flow card fires (via fireProductionTransitionTriggers)
+   *   - Homey's notification feed isn't spammed every evening
+   * meter_power and meter_power.daily are left untouched (lifetime + daily
+   * totals must not regress to 0 just because we couldn't reach the inverter).
+   *
+   * If the device was *already* unavailable we don't flip it back to available
+   * on a failure — only a successful poll does that. And `mark_unavailable`
+   * preserves the legacy behavior for users who want the explicit signal.
+   */
+  private async handlePollFailure(error: unknown): Promise<void> {
+    const description = this.describe(error);
+    const offlineBehavior = (this.getSetting("offline_behavior") as
+      | "keep_available"
+      | "mark_unavailable"
+      | undefined) ?? "keep_available";
+
+    if (offlineBehavior === "keep_available" && this.getAvailable()) {
+      this.log(`Inverter unreachable (${description}); treating as off (power=0)`);
+      await this.safeSetCapabilityValue("measure_power", 0);
+      this.fireProductionTransitionTriggers(0);
+      await this.safeSetCapabilityValue("measure_voltage", null);
+      await this.safeSetCapabilityValue("measure_frequency", null);
+      await this.safeSetCapabilityValue("measure_temperature", null);
+      return;
+    }
+
+    this.error(`Unavailable: ${description}`);
+    await this.markUnavailable(`Error retrieving data: ${description}`);
   }
 
   /**

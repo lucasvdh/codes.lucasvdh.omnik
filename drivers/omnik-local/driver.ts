@@ -2,6 +2,7 @@
 import { Driver } from "homey";
 import {
   HostUnreachableError,
+  InverterAsleepError,
   OmnikLocalApi,
   ParseError,
   TimeoutError,
@@ -119,6 +120,14 @@ class OmnikLocal extends Driver {
           return;
         }
 
+        // Inverter is asleep — manual S/N entry won't unstick it, the inverter
+        // itself isn't reporting. Bounce back to the pair view so the user can
+        // retry once the sun is up.
+        if (error instanceof InverterAsleepError) {
+          await this.flashError(session, message, "pair");
+          return;
+        }
+
         // Other failures (ParseError, UnexpectedResponseError) mean the host
         // responded but /js/status.js didn't give us a usable payload. TCP
         // may still work, so offer the manual S/N route.
@@ -153,6 +162,7 @@ class OmnikLocal extends Driver {
           wifi_sn: state.discovery.wifiStickSn,
           http_user: state.auth?.user ?? "",
           http_password: state.auth?.password ?? "",
+          offline_behavior: "keep_available",
         },
       };
     });
@@ -230,6 +240,9 @@ class OmnikLocal extends Driver {
     }
     if (error instanceof HostUnreachableError) {
       return this.homey.__("pair.omnik-local.error.host_unreachable");
+    }
+    if (error instanceof InverterAsleepError) {
+      return this.homey.__("pair.omnik-local.error.inverter_asleep");
     }
     if (error instanceof UnexpectedResponseError || error instanceof ParseError) {
       return this.homey.__("pair.omnik-local.error.unexpected_response");

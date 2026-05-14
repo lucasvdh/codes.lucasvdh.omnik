@@ -35,6 +35,7 @@
         "host_unreachable": "No se pudo comunicar con el inversor Omnik en esta dirección IP. Asegúrese de que la dirección IP sea correcta y el inversor esté encendido.",
         "connection_timed_out": "Se produjo un tiempo de espera al conectar con su inversor Omnik.",
         "unexpected_response": "Respuesta inesperada de su inversor Omnik. La aplicación admite el protocolo heredado 0x68 en TCP/8899 y la alternativa HTTP /js/status.js. Comparta su modelo en GitHub si ninguno funciona.",
+        "inverter_asleep": "El módulo WiFi responde pero no hay datos del inversor disponibles. El inversor probablemente está en reposo — los inversores Omnik se apagan cuando no hay suficiente luz solar. Inténtalo de nuevo cuando salga el sol y el inversor esté produciendo.",
         "auth_failed": "Falló la autenticación. Verifique el nombre de usuario y la contraseña.",
         "adding_device": "Algo salió mal al agregar el dispositivo.\n\nPodría ser que el inversor ya se haya agregado como dispositivo."
       }

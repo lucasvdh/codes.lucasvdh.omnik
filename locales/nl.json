@@ -35,6 +35,7 @@
         "host_unreachable": "Kon geen verbinding maken met de Omnik omvormer op dit IP-adres. Controleer of het IP-adres correct is en de omvormer is ingeschakeld.",
         "connection_timed_out": "Er is een time-out opgetreden bij het verbinden met uw Omnik omvormer.",
         "unexpected_response": "Onverwachte reactie ontvangen van uw Omnik omvormer. De app ondersteunt het legacy 0x68-protocol op TCP/8899 en de /js/status.js HTTP-fallback. Deel je model op GitHub als geen van beide werkt.",
+        "inverter_asleep": "De WiFi-module reageert, maar er zijn geen omvormergegevens beschikbaar. De omvormer slaapt waarschijnlijk — Omnik-omvormers schakelen uit bij onvoldoende zonlicht. Probeer het opnieuw zodra de zon op is en de omvormer produceert.",
         "auth_failed": "Authenticatie mislukt. Controleer de gebruikersnaam en het wachtwoord.",
         "adding_device": "Er is iets misgegaan bij het toevoegen van het apparaat.\n\nHet kan zijn dat de omvormer al als apparaat is toegevoegd."
       }

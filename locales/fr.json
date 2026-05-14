@@ -35,6 +35,7 @@
         "host_unreachable": "Impossible de contacter l'onduleur Omnik à cette adresse IP. Assurez-vous que l'adresse IP est correcte et que l'onduleur est allumé.",
         "connection_timed_out": "Une temporisation s'est produite lors de la connexion à votre onduleur Omnik.",
         "unexpected_response": "Réponse inattendue reçue de votre onduleur Omnik. L'application prend en charge le protocole 0x68 hérité sur TCP/8899 et le repli HTTP /js/status.js. Veuillez partager votre modèle sur GitHub si aucun ne fonctionne.",
+        "inverter_asleep": "Le module WiFi répond mais aucune donnée d'onduleur n'est disponible. L'onduleur est probablement en veille — les onduleurs Omnik s'éteignent en cas de luminosité insuffisante. Réessayez quand le soleil est levé et que l'onduleur produit.",
         "auth_failed": "Échec de l'authentification. Veuillez vérifier le nom d'utilisateur et le mot de passe.",
         "adding_device": "Une erreur s'est produite lors de l'ajout de l'appareil.\n\nIl se peut que l'onduleur ait déjà été ajouté comme appareil."
       }

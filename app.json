@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "codes.lucasvdh.omnik",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "compatibility": ">=12.2.0",
   "sdk": 3,
   "brandColor": "#eda328",
@@ -562,6 +562,67 @@
                 "pl": "Wymagane dla protokołu TCP. Wykrywane automatycznie podczas parowania."
               },
               "value": ""
+            },
+            {
+              "id": "offline_behavior",
+              "type": "dropdown",
+              "label": {
+                "en": "When the inverter is unreachable",
+                "nl": "Als de omvormer onbereikbaar is",
+                "de": "Wenn der Wechselrichter nicht erreichbar ist",
+                "fr": "Quand l'onduleur est injoignable",
+                "it": "Quando l'inverter è irraggiungibile",
+                "sv": "När växelriktaren inte kan nås",
+                "no": "Når omformeren er utilgjengelig",
+                "es": "Cuando el inversor es inalcanzable",
+                "da": "Når inverteren er utilgængelig",
+                "pl": "Gdy falownik jest nieosiągalny"
+              },
+              "hint": {
+                "en": "Omnik inverters power down at night when there is no DC voltage, taking the WiFi module offline with them. \"Treat as off\" keeps the device available and sets power to 0 — best for solar inverters that go offline nightly. \"Mark unavailable\" surfaces every poll failure in Homey's notifications.",
+                "nl": "Omnik-omvormers schakelen 's nachts uit wanneer er geen DC-spanning is, waardoor ook de WiFi-module offline gaat. \"Beschouw als uit\" houdt het apparaat beschikbaar en zet het vermogen op 0 — het beste voor zonne-omvormers die elke nacht offline gaan. \"Markeer als niet beschikbaar\" toont elke poll-fout in Homey's notificaties.",
+                "de": "Omnik-Wechselrichter schalten sich nachts ab, wenn keine DC-Spannung anliegt, und nehmen das WiFi-Modul mit. \"Als ausgeschaltet behandeln\" lässt das Gerät verfügbar und setzt die Leistung auf 0 — ideal für Solar-Wechselrichter, die jede Nacht offline gehen. \"Als nicht verfügbar markieren\" zeigt jeden Abrufausfall in Homeys Benachrichtigungen.",
+                "fr": "Les onduleurs Omnik s'éteignent la nuit en l'absence de tension DC, mettant aussi le module WiFi hors ligne. « Traiter comme éteint » garde l'appareil disponible et règle la puissance sur 0 — idéal pour les onduleurs solaires qui se déconnectent chaque nuit. « Marquer comme indisponible » affiche chaque échec de scrutation dans les notifications de Homey.",
+                "it": "Gli inverter Omnik si spengono di notte in assenza di tensione DC, portando offline anche il modulo WiFi. \"Considera come spento\" mantiene il dispositivo disponibile e imposta la potenza a 0 — ideale per inverter solari che vanno offline ogni notte. \"Segna come non disponibile\" mostra ogni errore di polling nelle notifiche di Homey.",
+                "sv": "Omnik-växelriktare stängs av på natten när det inte finns någon DC-spänning, och tar WiFi-modulen med sig offline. \"Behandla som av\" håller enheten tillgänglig och sätter effekt till 0 — bäst för solväxelriktare som går offline varje natt. \"Markera som otillgänglig\" visar varje pollningsfel i Homeys notiser.",
+                "no": "Omnik-omformere slår seg av om natten når det ikke er DC-spenning, og tar WiFi-modulen offline med seg. \"Behandle som av\" holder enheten tilgjengelig og setter effekten til 0 — best for solomformere som går offline hver natt. \"Marker som utilgjengelig\" viser hver pollingfeil i Homeys varsler.",
+                "es": "Los inversores Omnik se apagan por la noche cuando no hay tensión DC, dejando el módulo WiFi también fuera de línea. \"Tratar como apagado\" mantiene el dispositivo disponible y pone la potencia a 0 — ideal para inversores solares que se desconectan cada noche. \"Marcar como no disponible\" muestra cada fallo de sondeo en las notificaciones de Homey.",
+                "da": "Omnik-invertere slukker om natten, når der ikke er DC-spænding, og tager WiFi-modulet offline med sig. \"Behandl som slukket\" holder enheden tilgængelig og sætter effekten til 0 — bedst for solinvertere, der går offline hver nat. \"Marker som utilgængelig\" viser hver opslagsfejl i Homeys notifikationer.",
+                "pl": "Falowniki Omnik wyłączają się w nocy, gdy nie ma napięcia DC, zabierając ze sobą moduł WiFi w tryb offline. \"Traktuj jako wyłączony\" utrzymuje urządzenie dostępne i ustawia moc na 0 — najlepsze dla falowników solarnych, które codziennie wieczorem przechodzą w tryb offline. \"Oznacz jako niedostępne\" pokazuje każdy nieudany odczyt w powiadomieniach Homey."
+              },
+              "value": "keep_available",
+              "values": [
+                {
+                  "id": "keep_available",
+                  "label": {
+                    "en": "Treat as off (power = 0)",
+                    "nl": "Beschouw als uit (vermogen = 0)",
+                    "de": "Als ausgeschaltet behandeln (Leistung = 0)",
+                    "fr": "Traiter comme éteint (puissance = 0)",
+                    "it": "Considera come spento (potenza = 0)",
+                    "sv": "Behandla som av (effekt = 0)",
+                    "no": "Behandle som av (effekt = 0)",
+                    "es": "Tratar como apagado (potencia = 0)",
+                    "da": "Behandl som slukket (effekt = 0)",
+                    "pl": "Traktuj jako wyłączony (moc = 0)"
+                  }
+                },
+                {
+                  "id": "mark_unavailable",
+                  "label": {
+                    "en": "Mark as unavailable",
+                    "nl": "Markeer als niet beschikbaar",
+                    "de": "Als nicht verfügbar markieren",
+                    "fr": "Marquer comme indisponible",
+                    "it": "Segna come non disponibile",
+                    "sv": "Markera som otillgänglig",
+                    "no": "Marker som utilgjengelig",
+                    "es": "Marcar como no disponible",
+                    "da": "Marker som utilgængelig",
+                    "pl": "Oznacz jako niedostępne"
+                  }
+                }
+              ]
             }
           ]
         },
