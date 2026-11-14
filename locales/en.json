@@ -45,7 +45,8 @@
         "inverter_asleep": "The WiFi module is responding but no inverter data is available. The inverter is likely asleep. Omnik inverters power down when there is not enough sunlight. Try again when the sun is up and the inverter is producing.",
         "auth_failed": "Authentication failed. Please check the username and password.",
         "adding_device": "Something went wrong while adding the device.\n\nIt might be that the inverter has already been added as a device."
-      }
+      },
+      "found_title": "Found on your network. Tap one to use it, or enter the IP address below."
     },
     "help": {
       "need_help_pairing": "Need help pairing?",

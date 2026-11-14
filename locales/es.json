@@ -45,7 +45,8 @@
         "inverter_asleep": "El módulo WiFi responde pero no hay datos del inversor disponibles. El inversor probablemente está en reposo. Los inversores Omnik se apagan cuando no hay suficiente luz solar. Inténtalo de nuevo cuando salga el sol y el inversor esté produciendo.",
         "auth_failed": "Falló la autenticación. Verifique el nombre de usuario y la contraseña.",
         "adding_device": "Algo salió mal al agregar el dispositivo.\n\nPodría ser que el inversor ya se haya agregado como dispositivo."
-      }
+      },
+      "found_title": "Encontrado en tu red. Toca uno para usarlo o introduce la dirección IP abajo."
     },
     "help": {
       "need_help_pairing": "¿Necesita ayuda para emparejar?",

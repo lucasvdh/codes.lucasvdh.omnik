@@ -45,7 +45,8 @@
         "inverter_asleep": "WiFi-modulet svarer, men der er ingen inverterdata til rådighed. Inverteren er sandsynligvis i dvale. Omnik-invertere slukker ved utilstrækkeligt sollys. Prøv igen, når solen er oppe og inverteren producerer.",
         "auth_failed": "Godkendelse mislykkedes. Tjek brugernavn og adgangskode.",
         "adding_device": "Noget gik galt under tilføjelse af enheden.\n\nDet kan være, at inverteren allerede er tilføjet som en enhed."
-      }
+      },
+      "found_title": "Fundet på dit netværk. Tryk på en for at bruge den, eller indtast IP-adressen nedenfor."
     },
     "help": {
       "need_help_pairing": "Har du brug for hjælp til paring?",

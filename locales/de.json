@@ -45,7 +45,8 @@
         "inverter_asleep": "Das WiFi-Modul antwortet, aber es sind keine Wechselrichterdaten verfügbar. Der Wechselrichter befindet sich vermutlich im Ruhezustand. Omnik-Wechselrichter schalten sich bei unzureichendem Sonnenlicht ab. Versuchen Sie es erneut, sobald die Sonne aufgegangen ist und der Wechselrichter Strom erzeugt.",
         "auth_failed": "Authentifizierung fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.",
         "adding_device": "Beim Hinzufügen des Geräts ist ein Fehler aufgetreten.\n\nEs könnte sein, dass der Wechselrichter bereits als Gerät hinzugefügt wurde."
-      }
+      },
+      "found_title": "In Ihrem Netzwerk gefunden. Tippen Sie auf einen Eintrag oder geben Sie unten die IP-Adresse ein."
     },
     "help": {
       "need_help_pairing": "Brauchen Sie Hilfe bei der Kopplung?",

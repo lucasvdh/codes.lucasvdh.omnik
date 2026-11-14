@@ -45,7 +45,8 @@
         "inverter_asleep": "WiFi-modulen svarar men det finns inga växelriktardata. Växelriktaren är troligen i viloläge. Omnik-växelriktare stänger av sig vid otillräckligt solljus. Försök igen när solen är uppe och växelriktaren producerar.",
         "auth_failed": "Autentisering misslyckades. Kontrollera användarnamn och lösenord.",
         "adding_device": "Något gick fel när enheten skulle läggas till.\n\nDet kan vara så att växelriktaren redan har lagts till som en enhet."
-      }
+      },
+      "found_title": "Hittad i ditt nätverk. Tryck på en för att använda den, eller ange IP-adressen nedan."
     },
     "help": {
       "need_help_pairing": "Behöver du hjälp att para ihop?",

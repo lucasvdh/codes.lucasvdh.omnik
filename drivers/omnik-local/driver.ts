@@ -1,4 +1,5 @@
 import Homey from "homey";
+import type DiscoveryResultMAC from "homey/lib/DiscoveryResultMAC";
 import type PairSession from "homey/lib/PairSession";
 import {
   HostUnreachableError,
@@ -11,10 +12,22 @@ import {
 } from "../../lib/errors";
 import { OmnikHttpApi, type DiscoveryInfo, type HttpAuth } from "../../lib/omnik-http-client";
 import { OmnikLocalApi } from "../../lib/omnik-tcp-client";
+import { followsModuleAddress, normalizeMac } from "../../lib/mac";
 import type { Device, DeviceProtocol } from "../../lib/types";
 import { normalizeIpv4, parseWifiSn } from "../../lib/validation";
 
 type DeviceArg = { device: Homey.Device };
+
+// Not linked in driver.compose.json on purpose: Homey would then manage availability, and the
+// module disappears every night while the device must stay available ("treat as off").
+const DISCOVERY_STRATEGY_ID = "omnik-wifi-module";
+const STORE_MAC = "mac";
+const ARP_TIMEOUT_MS = 3000;
+
+interface FoundModule {
+  ip: string;
+  mac: string;
+}
 
 interface PairingState {
   ip: string | null;
@@ -28,6 +41,68 @@ interface PairingState {
 class OmnikLocal extends Homey.Driver {
   async onInit(): Promise<void> {
     this.registerFlowConditions();
+    this.followModuleAddresses();
+  }
+
+  /** Same pattern as Athom's apps for a strategy that isn't linked to the driver. */
+  private followModuleAddresses(): void {
+    try {
+      const strategy = this.homey.discovery.getStrategy(DISCOVERY_STRATEGY_ID);
+      const track = (result: DiscoveryResultMAC) => {
+        this.dispatchModuleAddress(result);
+        result.on("addressChanged", () => this.dispatchModuleAddress(result));
+      };
+      Object.values(this.discoveryResults()).forEach(track);
+      strategy.on("result", track);
+    } catch (err) {
+      this.error("[discovery] could not follow module addresses", err);
+    }
+  }
+
+  private dispatchModuleAddress(result: DiscoveryResultMAC): void {
+    const mac = normalizeMac(result.mac ?? result.id);
+    if (!mac || !result.address) return;
+    for (const device of this.getDevices()) {
+      if (followsModuleAddress(device)) {
+        device.followModuleAddress(mac, result.address).catch((err) =>
+          this.error("[discovery] failed to follow module address", err),
+        );
+      }
+    }
+  }
+
+  private discoveryResults(): Record<string, DiscoveryResultMAC> {
+    return this.homey.discovery.getStrategy(DISCOVERY_STRATEGY_ID).getDiscoveryResults() as Record<
+      string,
+      DiscoveryResultMAC
+    >;
+  }
+
+  /** Modules Homey found by MAC prefix that aren't paired yet. The prefix is shared with other devices; probing decides. */
+  private foundModules(): FoundModule[] {
+    const paired = new Set(this.getDevices().map((d) => normalizeMac(d.getStoreValue(STORE_MAC))));
+    return Object.values(this.discoveryResults())
+      .map((r) => ({ ip: r.address, mac: normalizeMac(r.mac ?? r.id) }))
+      .filter((m): m is FoundModule => Boolean(m.ip && m.mac) && !paired.has(m.mac));
+  }
+
+  private async macForIp(ip: string): Promise<string | null> {
+    const known = Object.values(this.discoveryResults()).find((r) => r.address === ip);
+    if (known) return normalizeMac(known.mac ?? known.id);
+    let timer: NodeJS.Timeout | undefined;
+    try {
+      const mac = await Promise.race([
+        this.homey.arp.getMAC(ip),
+        new Promise<null>((resolve) => {
+          timer = this.homey.setTimeout(() => resolve(null), ARP_TIMEOUT_MS);
+        }),
+      ]);
+      return normalizeMac(mac);
+    } catch {
+      return null;
+    } finally {
+      this.homey.clearTimeout(timer);
+    }
   }
 
   private registerFlowConditions(): void {
@@ -67,6 +142,15 @@ class OmnikLocal extends Homey.Driver {
       state.ip = ip;
     });
     session.setHandler("getIpAddress", async () => state.ip);
+
+    session.setHandler("scanNetwork", async (): Promise<FoundModule[]> => {
+      try {
+        return this.foundModules();
+      } catch (err) {
+        this.error("[pair] discovery results unavailable", err);
+        return [];
+      }
+    });
 
     session.setHandler("submitAuth", async (auth: HttpAuth) => {
       state.auth = auth;
@@ -166,7 +250,9 @@ class OmnikLocal extends Homey.Driver {
 
     session.setHandler("getDevice", async (): Promise<Device | null> => {
       if (!state.discovery || !state.protocol || !state.ip) return null;
+      const mac = await this.macForIp(state.ip);
       return {
+        store: mac ? { [STORE_MAC]: mac } : {},
         name: state.discovery.inverterName || "Omnik",
         data: {
           id: Number(state.discovery.wifiStickSn),

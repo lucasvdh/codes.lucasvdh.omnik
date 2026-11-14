@@ -1,5 +1,6 @@
 import { capabilityOptionsDiffer } from "../../lib/capability-options";
 import { describeError, isRetryable } from "../../lib/errors";
+import { type FollowsModuleAddress, movedAddress, normalizeMac } from "../../lib/mac";
 import { InverterDevice } from "../../lib/inverter-device";
 import { OmnikHttpApi } from "../../lib/omnik-http-client";
 import { OmnikLocalApi, type InverterData } from "../../lib/omnik-tcp-client";
@@ -24,6 +25,7 @@ import {
 
 const RETRY_DELAY_MS = 5000;
 const STORE_LAST_READING_DAY = "last_reading_day";
+const STORE_MAC = "mac";
 const MAX_ATTEMPTS = 2;
 
 const ADDED_IN_1_2_0 = ["measure_temperature", "meter_power.daily"];
@@ -39,10 +41,11 @@ interface DriverManifest {
   capabilitiesOptions?: Record<string, Record<string, unknown>>;
 }
 
-class OmnikLocal extends InverterDevice {
+class OmnikLocal extends InverterDevice implements FollowsModuleAddress {
   private api?: InverterClient;
   private previousPower?: number;
   private consecutiveFailures = 0;
+  private macBackfillTried = false;
 
   async onInit(): Promise<void> {
     this.log("[device] init");
@@ -166,6 +169,7 @@ class OmnikLocal extends InverterDevice {
         await this.applyInverterData(data);
         this.consecutiveFailures = 0;
         await this.markAvailable();
+        this.backfillMac().catch((err) => this.error("[discovery] MAC backfill failed", err));
         return;
       } catch (error) {
         lastError = error;
@@ -200,6 +204,31 @@ class OmnikLocal extends InverterDevice {
 
     this.error(`[poller] unavailable: ${description}`);
     await this.markUnavailable(this.homey.__("device.error.unreachable", { reason: description }));
+  }
+
+  /** Called by the driver when Homey's MAC discovery sees a module at an address. */
+  async followModuleAddress(mac: string, address: string): Promise<void> {
+    const currentIp = (this.getSetting("ip") as string | undefined) ?? "";
+    const newIp = movedAddress(this.getStoreValue(STORE_MAC), mac, address, currentIp);
+    if (!newIp) return;
+
+    this.log(`[discovery] module moved from ${currentIp} to ${newIp}`);
+    await this.setSettings({ ip: newIp });
+    this.api = this.buildApi({ ip: newIp });
+    this.pollNow();
+  }
+
+  /** Devices paired before discovery have no MAC yet; learn it while the module is reachable. */
+  private async backfillMac(): Promise<void> {
+    if (this.macBackfillTried || normalizeMac(this.getStoreValue(STORE_MAC))) return;
+    this.macBackfillTried = true;
+    const ip = ((this.getSetting("ip") as string | undefined) ?? "").trim();
+    try {
+      const mac = normalizeMac(await this.homey.arp.getMAC(ip));
+      if (mac) await this.setStoreValue(STORE_MAC, mac);
+    } catch (err) {
+      this.error("[discovery] could not learn the module's MAC address", err);
+    }
   }
 
   private async reportOff(): Promise<void> {

@@ -45,7 +45,8 @@
         "inverter_asleep": "De WiFi-module reageert, maar er zijn geen omvormergegevens beschikbaar. De omvormer slaapt waarschijnlijk. Omnik-omvormers schakelen uit bij onvoldoende zonlicht. Probeer het opnieuw zodra de zon op is en de omvormer produceert.",
         "auth_failed": "Authenticatie mislukt. Controleer de gebruikersnaam en het wachtwoord.",
         "adding_device": "Er is iets misgegaan bij het toevoegen van het apparaat.\n\nHet kan zijn dat de omvormer al als apparaat is toegevoegd."
-      }
+      },
+      "found_title": "Gevonden op je netwerk. Tik er een aan om die te gebruiken, of vul hieronder het IP-adres in."
     },
     "help": {
       "need_help_pairing": "Hulp nodig bij het koppelen?",
