@@ -45,7 +45,8 @@
         "inverter_asleep": "WiFi-modulen svarer, men det finnes ingen omformerdata. Omformeren er sannsynligvis i hvilemodus. Omnik-omformere slår seg av ved utilstrekkelig sollys. Prøv igjen når solen er oppe og omformeren produserer.",
         "auth_failed": "Autentisering mislyktes. Sjekk brukernavn og passord.",
         "adding_device": "Noe gikk galt under tillegg av enheten.\n\nDet kan være at inverteren allerede er lagt til som en enhet."
-      }
+      },
+      "found_title": "Funnet i nettverket ditt. Trykk på en for å bruke den, eller skriv inn IP-adressen nedenfor."
     },
     "help": {
       "need_help_pairing": "Trenger du hjelp med sammenkobling?",

@@ -28,6 +28,7 @@ export interface SettingsInput {
 export interface Device {
   name: string;
   data: DeviceData;
+  store: Record<string, string>;
   settings: DeviceSettings;
 }
 

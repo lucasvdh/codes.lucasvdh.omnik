@@ -27,6 +27,7 @@ App-specific traps (keep this list current):
 - `data.id` is the WiFi module S/N as a number and is the device identity. It must never change. The IP lives in settings.
 - Availability only changes on transitions and never throws: `setUnavailable` on every poll caused `SQLITE_FULL` crashes (#4, #6).
 - In `onSettings` the new values aren't persisted yet; `buildApi(newSettings)` takes them as overrides.
+- Discovery is Homey's MAC strategy (`omnik-wifi-module`), deliberately not linked to the driver so Homey doesn't manage availability (night shutdown). Pairing and polling must keep working when it finds nothing. Not yet verified on a real Homey.
 - Firmware differs per module: `/js/status.js` may expose `webData` or only `myDeviceArray[0]` (#1), and an empty `myDeviceArray` / `yz_device_num="0"` means the inverter is asleep, not unsupported.
 - The diagnostic report itself (the markdown users paste into GitHub) is English on purpose: it is read by the maintainer. Everything around it (settings page, progress, errors) uses locale keys under `settings.*`.
 

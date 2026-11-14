@@ -1,8 +1,8 @@
 # Apparaat toevoegen
 
-Het koppelen gaat in de meeste gevallen volledig automatisch - je hebt alleen het IP-adres van de WiFi-module van je omvormer nodig.
+Het koppelen gaat in de meeste gevallen volledig automatisch. Homey zoekt je netwerk af naar Omnik WiFi-modules; staat de jouwe er niet tussen, dan heb je alleen het IP-adres van de WiFi-module nodig.
 
-## Stap 1 - IP-adres opzoeken
+## Stap 1 - IP-adres opzoeken (alleen als je omvormer niet in de lijst staat)
 
 De WiFi-module verbindt met je thuisnetwerk net als elk ander apparaat. Vind het IP via:
 
@@ -10,13 +10,13 @@ De WiFi-module verbindt met je thuisnetwerk net als elk ander apparaat. Vind het
 - De Omnik-app op je telefoon (als je die ooit hebt ingesteld)
 - Een netwerk-scanner zoals Fing
 
-Tip: stel een vast IP in via je router zodat het niet kan veranderen.
+Tip: een vast IP in je router is niet meer nodig. Als het IP verandert, vindt Homey de module terug op zijn MAC-adres en schakelt de app over naar het nieuwe adres. Een vast IP helpt nog wel als dat op jouw netwerk niet werkt.
 
 ## Stap 2 - koppelen via Homey
 
 In de Homey-app: *+ Apparaat toevoegen* → *Omnik* → *Omnik-omvormer*.
 
-Vul het IP in en tik op *Volgende*. De app:
+Tik op de omvormer in de lijst met gevonden apparaten, of vul het IP in en tik op *Volgende*. In de lijst kunnen ook andere apparaten met dezelfde WiFi-chip staan; de app controleert of het een Omnik is voordat hij wordt toegevoegd. De app:
 
 1. Leest `/js/status.js` van de omvormer en haalt automatisch het serienummer van de WiFi-module op
 2. Probeert het binaire TCP/8899-protocol met dat serienummer (voorkeur - geeft meer data)

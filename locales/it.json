@@ -45,7 +45,8 @@
         "inverter_asleep": "Il modulo WiFi risponde ma non sono disponibili dati dell'inverter. L'inverter è probabilmente in stand-by. Gli inverter Omnik si spengono quando la luce solare è insufficiente. Riprova quando il sole sarà alto e l'inverter starà producendo.",
         "auth_failed": "Autenticazione fallita. Verifica il nome utente e la password.",
         "adding_device": "Qualcosa è andato storto durante l'aggiunta del dispositivo.\n\nPotrebbe essere che l'inverter sia già stato aggiunto come dispositivo."
-      }
+      },
+      "found_title": "Trovato nella tua rete. Toccane uno per usarlo, oppure inserisci l'indirizzo IP qui sotto."
     },
     "help": {
       "need_help_pairing": "Hai bisogno di aiuto per l'accoppiamento?",

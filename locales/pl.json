@@ -45,7 +45,8 @@
         "inverter_asleep": "Moduł WiFi odpowiada, ale brak dostępnych danych falownika. Falownik prawdopodobnie jest uśpiony. Falowniki Omnik wyłączają się przy niewystarczającym świetle słonecznym. Spróbuj ponownie, gdy wzejdzie słońce i falownik zacznie produkować.",
         "auth_failed": "Uwierzytelnianie nie powiodło się. Sprawdź nazwę użytkownika i hasło.",
         "adding_device": "Coś poszło nie tak podczas dodawania urządzenia.\n\nMoże to oznaczać, że inwerter został już dodany jako urządzenie."
-      }
+      },
+      "found_title": "Znaleziono w twojej sieci. Dotknij jednego, aby go użyć, lub wpisz adres IP poniżej."
     },
     "help": {
       "need_help_pairing": "Potrzebujesz pomocy przy parowaniu?",

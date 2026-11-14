@@ -1,6 +1,11 @@
 <base target="_parent"/>
 
 <div class="form-wrapper">
+    <div id="found" class="found" style="display: none">
+        <p class="hint" data-i18n="pair.omnik-local.found_title">Found on your network</p>
+        <div id="found-list"></div>
+    </div>
+
     <form class="homey-form">
         <fieldset class="homey-form-fieldset">
             <div class="homey-form-group">
@@ -46,6 +51,28 @@
     function ipAddressChanged(value) {
         Homey.emit("setIpAddress", value);
     }
+
+    function useModule(module) {
+        document.getElementById("ip_address").value = module.ip;
+        Homey.emit("setIpAddress", module.ip).then(function () {
+            Homey.showView("probing");
+        });
+    }
+
+    // Modules Homey found by MAC address; entering an IP by hand keeps working without them.
+    Homey.emit("scanNetwork").then(function (modules) {
+        if (!modules || modules.length === 0) return;
+        const list = document.getElementById("found-list");
+        modules.forEach(function (module) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "homey-button-secondary-full found-item";
+            button.textContent = module.ip + "  (" + module.mac + ")";
+            button.addEventListener("click", function () { useModule(module); });
+            list.appendChild(button);
+        });
+        document.getElementById("found").style.display = "block";
+    }).catch(function () {});
 </script>
 
 <style type="text/css">
@@ -56,6 +83,15 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
+    }
+
+    .found {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .found-item {
+        margin-top: 0.5rem;
     }
 
     .footer {

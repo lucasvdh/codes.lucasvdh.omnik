@@ -61,7 +61,11 @@ An empty `myDeviceArray` or `yz_device_num = "0"` while `m2mMid` is present mean
 
 Some modules require basic auth (often `admin`/`admin`).
 
-## Discovery (not used yet)
+## Discovery
 
-- MAC prefixes seen on Omnik modules: `AC:CF:23` and `F0:FE:6B`, both Hi-Flying (the WiFi chip vendor, also used in other IoT devices).
-- XtheOne/Inverter-Data-Logger finds modules with a UDP broadcast of `WIFIKIT-214028-READ` to port 48899; modules answer `IP,MAC,S/N`. Not yet verified against an Omnik module from Homey.
+The modules don't announce themselves (no mDNS or SSDP), so the app uses Homey's **MAC discovery strategy** (`.homeycompose/discovery/omnik-wifi-module.json`). Homey finds devices via ARP by MAC prefix.
+
+- Prefixes seen on Omnik modules: `AC:CF:23` and `F0:FE:6B`, both Hi-Flying, the WiFi chip vendor. Other IoT devices use the same chip, so a result is only a candidate; pairing probes it.
+- The strategy is deliberately **not** linked to the driver with `"discovery"`. A linked strategy makes Homey manage availability, and the module disappears every night while the device must stay available. The driver uses it the way Athom's own apps use an unlinked strategy: `getDiscoveryResults()`, `strategy.on("result")` and `result.on("addressChanged")`.
+- The device's MAC is in the store (`mac`), set at pairing (discovery result or ARP) or learned after the first successful poll for older devices. When Homey sees that MAC at another address, the device switches its `ip` setting.
+- Not used: XtheOne/Inverter-Data-Logger finds modules with a UDP broadcast of `WIFIKIT-214028-READ` to port 48899 (answer `IP,MAC,S/N`). That would be a custom mechanism next to Homey's own discovery.

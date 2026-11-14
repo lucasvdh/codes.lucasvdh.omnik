@@ -1,8 +1,8 @@
 # Adding your inverter
 
-The pair flow is fully automatic in the common case - you only need the IP address of your inverter's WiFi module.
+The pair flow is fully automatic in the common case. Homey looks for Omnik WiFi modules on your network; if yours isn't listed, you only need the IP address of the WiFi module.
 
-## Step 1 - find the IP address
+## Step 1 - find the IP address (only if your inverter isn't listed)
 
 The WiFi module connects to your home network like any other device. Find its IP in:
 
@@ -10,13 +10,13 @@ The WiFi module connects to your home network like any other device. Find its IP
 - The Omnik app on your phone (if you set it up there originally)
 - A network scanner like Fing
 
-Tip: assign a fixed IP in your router so it doesn't change.
+Tip: a fixed IP in your router is no longer required. When the IP changes, Homey finds the module again by its MAC address and the app switches to the new address. A fixed IP still helps if that doesn't work on your network.
 
 ## Step 2 - start pairing in Homey
 
 In the Homey app: *+ Add device* → *Omnik* → *Omnik inverter*.
 
-Enter the IP and tap *Next*. The app then:
+Tap the inverter in the list of found devices, or enter the IP and tap *Next*. The list can contain other devices with the same WiFi chip; the app checks whether it is an Omnik before adding it. The app then:
 
 1. Reads `/js/status.js` from the inverter to discover the WiFi-module serial number automatically
 2. Tries the binary TCP/8899 protocol with that serial number (preferred - it gives more data)
