@@ -28,7 +28,7 @@ App-specific traps (keep this list current):
 - Availability only changes on transitions and never throws: `setUnavailable` on every poll caused `SQLITE_FULL` crashes (#4, #6).
 - In `onSettings` the new values aren't persisted yet; `buildApi(newSettings)` takes them as overrides.
 - Firmware differs per module: `/js/status.js` may expose `webData` or only `myDeviceArray[0]` (#1), and an empty `myDeviceArray` / `yz_device_num="0"` means the inverter is asleep, not unsupported.
-- The settings page (diagnostic report tool) and the progress strings in `api.ts` / `lib/diagnostic.ts` are still English only. Localizing them is open work; new strings there should go through locale keys.
+- The diagnostic report itself (the markdown users paste into GitHub) is English on purpose: it is read by the maintainer. Everything around it (settings page, progress, errors) uses locale keys under `settings.*`.
 
 ---
 

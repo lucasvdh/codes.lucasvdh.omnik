@@ -49,5 +49,52 @@
       "need_help_pairing": "Har du brug for hjælp til paring?",
       "click_here_documentation": "Klik her for at se dokumentationen."
     }
+  },
+  "settings": {
+    "title": "Diagnoserapport",
+    "lead": "Laver et øjebliksbillede af én Omnik-inverter: indstillinger, gemt tilstand, værdier for funktionerne og resultatet af test af den binære protokol på TCP-port 8899 og HTTP-siden /js/status.js. Rapporten bliver på din enhed og sendes ingen steder hen. Brug den, når du rapporterer et problem.",
+    "tab_paired": "Parret enhed",
+    "tab_ip": "Via IP-adresse",
+    "generate": "Lav rapport",
+    "generating": "Tester kører…",
+    "hint_paired": "Brug dette, når inverteren er parret med Homey, også når den vises som utilgængelig.",
+    "ip_placeholder": "f.eks. 192.168.1.42",
+    "probe_ip": "Test IP",
+    "probing": "Tester…",
+    "hint_ip": "Brug dette, når parringen mislykkes. /js/status.js testes uden login og med standard admin/admin. Den binære protokol på TCP-port 8899 kan først testes, når WiFi-modulets S/N er kendt.",
+    "output_placeholder": "Rapporten vises her, når du har lavet den.",
+    "copy": "Kopiér til udklipsholder",
+    "footer": "Indsæt den kopierede rapport i en ny GitHub-sag. Rapporten indeholder inverterens lokale IP-adresse, MAC-adresse og serienummer. De kan kun bruges inden for dit hjemmenetværk. HTTP-adgangskoden fjernes automatisk. Hvis du foretrækker det, kan du fjerne de andre oplysninger, efter du har indsat teksten.",
+    "new_issue": "Åbn en ny GitHub-sag",
+    "status": {
+      "list_failed": "Kunne ikke hente enheder: __error__",
+      "no_devices": "Ingen parrede Omnik-invertere fundet",
+      "running": "Kører…",
+      "report_ready": "Rapporten er klar. Kopiér den og indsæt den i en ny GitHub-sag.",
+      "report_failed": "Rapporten mislykkedes: __error__",
+      "unknown_error": "ukendt fejl",
+      "already_running": "Der kører allerede en rapport. Vent, til den er færdig.",
+      "starting": "Starter…",
+      "start_failed": "Kunne ikke starte rapporten: __error__",
+      "no_run_id": "serveren returnerede intet kørsels-id",
+      "timed_out": "Rapporten tog for lang tid (intet svar inden for __seconds__ sekunder). Inverteren er måske ikke tilgængelig.",
+      "pick_device": "Vælg først en enhed.",
+      "enter_ip": "Indtast først en IP-adresse.",
+      "copied": "Kopieret til udklipsholder.",
+      "copy_failed": "Kunne ikke kopiere automatisk. Markér teksten og kopiér den manuelt."
+    },
+    "progress": {
+      "arp": "Slår MAC-adressen op via ARP…",
+      "arp_ip": "Slår MAC-adressen for __ip__ op via ARP…",
+      "probing_http": "Kontrollerer TCP-port 8899 og læser /js/status.js på __ip__…",
+      "probing_tcp": "Tester den binære protokol med S/N __sn__…",
+      "skipping_tcp": "Test af den binære protokol sprunget over: intet S/N for WiFi-modulet tilgængeligt.",
+      "rendering": "Alle tests færdige, laver rapporten…"
+    },
+    "error": {
+      "device_not_found": "Ingen parret enhed fundet med id __id__.",
+      "ip_required": "Indtast en IP-adresse.",
+      "ip_invalid": "\"__ip__\" er ikke en gyldig IPv4-adresse."
+    }
   }
 }

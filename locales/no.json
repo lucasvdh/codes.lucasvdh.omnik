@@ -49,5 +49,52 @@
       "need_help_pairing": "Trenger du hjelp med sammenkobling?",
       "click_here_documentation": "Klikk her for å se dokumentasjonen."
     }
+  },
+  "settings": {
+    "title": "Diagnoserapport",
+    "lead": "Lager et øyeblikksbilde av én Omnik-omformer: innstillinger, lagret tilstand, verdier for funksjonene og resultatet av tester av den binære protokollen på TCP-port 8899 og HTTP-siden /js/status.js. Rapporten blir på enheten din og sendes ingen steder. Bruk den når du rapporterer et problem.",
+    "tab_paired": "Paret enhet",
+    "tab_ip": "Via IP-adresse",
+    "generate": "Lag rapport",
+    "generating": "Tester kjører…",
+    "hint_paired": "Bruk dette når omformeren er paret med Homey, også når den vises som utilgjengelig.",
+    "ip_placeholder": "f.eks. 192.168.1.42",
+    "probe_ip": "Test IP",
+    "probing": "Tester…",
+    "hint_ip": "Bruk dette når paringen mislykkes. /js/status.js testes uten innlogging og med standard admin/admin. Den binære protokollen på TCP-port 8899 kan bare testes når S/N for WiFi-modulen er kjent.",
+    "output_placeholder": "Rapporten vises her etter at du har laget den.",
+    "copy": "Kopier til utklippstavlen",
+    "footer": "Lim inn den kopierte rapporten i en ny GitHub-sak. Rapporten inneholder omformerens lokale IP-adresse, MAC-adresse og serienummer. Disse er bare nyttige innenfor hjemmenettverket ditt. HTTP-passordet fjernes automatisk. Hvis du vil, kan du fjerne de andre opplysningene etter at du har limt inn.",
+    "new_issue": "Åpne en ny GitHub-sak",
+    "status": {
+      "list_failed": "Kunne ikke hente enheter: __error__",
+      "no_devices": "Fant ingen parede Omnik-omformere",
+      "running": "Kjører…",
+      "report_ready": "Rapporten er klar. Kopier den og lim den inn i en ny GitHub-sak.",
+      "report_failed": "Rapporten mislyktes: __error__",
+      "unknown_error": "ukjent feil",
+      "already_running": "En rapport kjører allerede. Vent til den er ferdig.",
+      "starting": "Starter…",
+      "start_failed": "Kunne ikke starte rapporten: __error__",
+      "no_run_id": "serveren returnerte ingen kjørings-id",
+      "timed_out": "Rapporten tok for lang tid (ikke svar innen __seconds__ sekunder). Omformeren kan være utilgjengelig.",
+      "pick_device": "Velg en enhet først.",
+      "enter_ip": "Skriv inn en IP-adresse først.",
+      "copied": "Kopiert til utklippstavlen.",
+      "copy_failed": "Kunne ikke kopiere automatisk. Merk teksten og kopier den manuelt."
+    },
+    "progress": {
+      "arp": "Slår opp MAC-adressen via ARP…",
+      "arp_ip": "Slår opp MAC-adressen til __ip__ via ARP…",
+      "probing_http": "Sjekker TCP-port 8899 og leser /js/status.js på __ip__…",
+      "probing_tcp": "Tester den binære protokollen med S/N __sn__…",
+      "skipping_tcp": "Test av den binære protokollen hoppet over: ingen S/N for WiFi-modulen tilgjengelig.",
+      "rendering": "Alle tester ferdige, lager rapporten…"
+    },
+    "error": {
+      "device_not_found": "Fant ingen paret enhet med id __id__.",
+      "ip_required": "Skriv inn en IP-adresse.",
+      "ip_invalid": "«__ip__» er ikke en gyldig IPv4-adresse."
+    }
   }
 }

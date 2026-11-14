@@ -49,5 +49,52 @@
       "need_help_pairing": "Brauchen Sie Hilfe bei der Kopplung?",
       "click_here_documentation": "Klicken Sie hier, um die Dokumentation anzuzeigen."
     }
+  },
+  "settings": {
+    "title": "Diagnosebericht",
+    "lead": "Erstellt eine Momentaufnahme eines Omnik-Wechselrichters: Einstellungen, gespeicherter Zustand, Werte der Capabilities und das Ergebnis der Tests des Binärprotokolls auf TCP-Port 8899 und der HTTP-Seite /js/status.js. Der Bericht bleibt auf Ihrem Gerät und wird nirgendwohin gesendet. Verwenden Sie ihn, wenn Sie ein Problem melden.",
+    "tab_paired": "Gekoppeltes Gerät",
+    "tab_ip": "Über IP-Adresse",
+    "generate": "Bericht erstellen",
+    "generating": "Tests laufen…",
+    "hint_paired": "Verwenden Sie dies, wenn der Wechselrichter mit Homey gekoppelt ist, auch wenn er als nicht verfügbar angezeigt wird.",
+    "ip_placeholder": "z. B. 192.168.1.42",
+    "probe_ip": "IP testen",
+    "probing": "Wird getestet…",
+    "hint_ip": "Verwenden Sie dies, wenn das Koppeln fehlschlägt. /js/status.js wird ohne Anmeldung und mit dem Standard admin/admin getestet. Das Binärprotokoll auf TCP-Port 8899 kann erst getestet werden, wenn die S/N des WiFi-Moduls bekannt ist.",
+    "output_placeholder": "Der Bericht erscheint hier, nachdem Sie ihn erstellt haben.",
+    "copy": "In die Zwischenablage kopieren",
+    "footer": "Fügen Sie den kopierten Bericht in ein neues GitHub-Issue ein. Der Bericht enthält die lokale IP-Adresse, MAC-Adresse und Seriennummer Ihres Wechselrichters. Diese sind nur innerhalb Ihres Heimnetzwerks nutzbar. Das HTTP-Passwort wird automatisch entfernt. Wenn Sie möchten, entfernen Sie die anderen Angaben nach dem Einfügen.",
+    "new_issue": "Neues GitHub-Issue öffnen",
+    "status": {
+      "list_failed": "Geräte konnten nicht geladen werden: __error__",
+      "no_devices": "Keine gekoppelten Omnik-Wechselrichter gefunden",
+      "running": "Läuft…",
+      "report_ready": "Bericht fertig. Kopieren Sie ihn und fügen Sie ihn in ein neues GitHub-Issue ein.",
+      "report_failed": "Bericht fehlgeschlagen: __error__",
+      "unknown_error": "unbekannter Fehler",
+      "already_running": "Es läuft bereits ein Bericht. Warten Sie, bis er fertig ist.",
+      "starting": "Wird gestartet…",
+      "start_failed": "Bericht konnte nicht gestartet werden: __error__",
+      "no_run_id": "der Server hat keine Run-ID zurückgegeben",
+      "timed_out": "Zeitüberschreitung beim Bericht (keine Antwort innerhalb von __seconds__ Sekunden). Der Wechselrichter ist möglicherweise nicht erreichbar.",
+      "pick_device": "Wählen Sie zuerst ein Gerät.",
+      "enter_ip": "Geben Sie zuerst eine IP-Adresse ein.",
+      "copied": "In die Zwischenablage kopiert.",
+      "copy_failed": "Automatisches Kopieren nicht möglich. Markieren Sie den Text und kopieren Sie ihn manuell."
+    },
+    "progress": {
+      "arp": "MAC-Adresse wird über ARP gesucht…",
+      "arp_ip": "MAC-Adresse von __ip__ wird über ARP gesucht…",
+      "probing_http": "TCP-Port 8899 wird geprüft und /js/status.js auf __ip__ gelesen…",
+      "probing_tcp": "Binärprotokoll wird mit S/N __sn__ getestet…",
+      "skipping_tcp": "Test des Binärprotokolls übersprungen: keine S/N des WiFi-Moduls verfügbar.",
+      "rendering": "Alle Tests fertig, Bericht wird erstellt…"
+    },
+    "error": {
+      "device_not_found": "Kein gekoppeltes Gerät mit der ID __id__ gefunden.",
+      "ip_required": "Geben Sie eine IP-Adresse ein.",
+      "ip_invalid": "\"__ip__\" ist keine gültige IPv4-Adresse."
+    }
   }
 }

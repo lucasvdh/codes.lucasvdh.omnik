@@ -49,5 +49,52 @@
       "need_help_pairing": "Hai bisogno di aiuto per l'accoppiamento?",
       "click_here_documentation": "Fai clic qui per visualizzare la documentazione."
     }
+  },
+  "settings": {
+    "title": "Rapporto diagnostico",
+    "lead": "Crea un'istantanea di un inverter Omnik: impostazioni, stato salvato, valori delle capability e il risultato dei test del protocollo binario sulla porta TCP 8899 e della pagina HTTP /js/status.js. Il rapporto resta sul tuo dispositivo e non viene inviato da nessuna parte. Usalo quando segnali un problema.",
+    "tab_paired": "Dispositivo associato",
+    "tab_ip": "Tramite indirizzo IP",
+    "generate": "Crea rapporto",
+    "generating": "Test in corso…",
+    "hint_paired": "Usa questa opzione quando l'inverter è associato a Homey, anche se risulta non disponibile.",
+    "ip_placeholder": "es. 192.168.1.42",
+    "probe_ip": "Testa IP",
+    "probing": "Test in corso…",
+    "hint_ip": "Usa questa opzione quando l'associazione non riesce. /js/status.js viene testato senza login e con le credenziali predefinite admin/admin. Il protocollo binario sulla porta TCP 8899 può essere testato solo quando è noto il S/N del modulo WiFi.",
+    "output_placeholder": "Il rapporto appare qui dopo averlo creato.",
+    "copy": "Copia negli appunti",
+    "footer": "Incolla il rapporto copiato in una nuova issue su GitHub. Il rapporto contiene l'indirizzo IP locale, l'indirizzo MAC e il numero di serie del tuo inverter. Sono utili solo all'interno della tua rete domestica. La password HTTP viene rimossa automaticamente. Se preferisci, rimuovi gli altri identificativi dopo averlo incollato.",
+    "new_issue": "Apri una nuova issue su GitHub",
+    "status": {
+      "list_failed": "Impossibile elencare i dispositivi: __error__",
+      "no_devices": "Nessun inverter Omnik associato trovato",
+      "running": "In corso…",
+      "report_ready": "Rapporto pronto. Copialo e incollalo in una nuova issue su GitHub.",
+      "report_failed": "Rapporto non riuscito: __error__",
+      "unknown_error": "errore sconosciuto",
+      "already_running": "È già in corso un rapporto. Attendi che finisca.",
+      "starting": "Avvio…",
+      "start_failed": "Impossibile avviare il rapporto: __error__",
+      "no_run_id": "il server non ha restituito un id di esecuzione",
+      "timed_out": "Il rapporto è scaduto (nessuna risposta entro __seconds__ secondi). L'inverter potrebbe non essere raggiungibile.",
+      "pick_device": "Scegli prima un dispositivo.",
+      "enter_ip": "Inserisci prima un indirizzo IP.",
+      "copied": "Copiato negli appunti.",
+      "copy_failed": "Impossibile copiare automaticamente. Seleziona il testo e copialo manualmente."
+    },
+    "progress": {
+      "arp": "Ricerca dell'indirizzo MAC tramite ARP…",
+      "arp_ip": "Ricerca dell'indirizzo MAC di __ip__ tramite ARP…",
+      "probing_http": "Verifica della porta TCP 8899 e lettura di /js/status.js su __ip__…",
+      "probing_tcp": "Test del protocollo binario con S/N __sn__…",
+      "skipping_tcp": "Test del protocollo binario saltato: nessun S/N del modulo WiFi disponibile.",
+      "rendering": "Tutti i test completati, creazione del rapporto…"
+    },
+    "error": {
+      "device_not_found": "Nessun dispositivo associato trovato con id __id__.",
+      "ip_required": "Inserisci un indirizzo IP.",
+      "ip_invalid": "\"__ip__\" non è un indirizzo IPv4 valido."
+    }
   }
 }

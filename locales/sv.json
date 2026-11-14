@@ -49,5 +49,52 @@
       "need_help_pairing": "Behöver du hjälp att para ihop?",
       "click_here_documentation": "Klicka här för att visa dokumentationen."
     }
+  },
+  "settings": {
+    "title": "Diagnosrapport",
+    "lead": "Skapar en ögonblicksbild av en Omnik-växelriktare: inställningar, sparat tillstånd, värden för funktionerna och resultatet av tester av det binära protokollet på TCP-port 8899 och HTTP-sidan /js/status.js. Rapporten stannar på din enhet och skickas ingenstans. Använd den när du rapporterar ett problem.",
+    "tab_paired": "Parkopplad enhet",
+    "tab_ip": "Via IP-adress",
+    "generate": "Skapa rapport",
+    "generating": "Tester körs…",
+    "hint_paired": "Använd detta när växelriktaren är parkopplad med Homey, även om den visas som otillgänglig.",
+    "ip_placeholder": "t.ex. 192.168.1.42",
+    "probe_ip": "Testa IP",
+    "probing": "Testar…",
+    "hint_ip": "Använd detta när parkopplingen misslyckas. /js/status.js testas utan inloggning och med standardvärdet admin/admin. Det binära protokollet på TCP-port 8899 kan bara testas när WiFi-modulens S/N är känt.",
+    "output_placeholder": "Rapporten visas här när du har skapat den.",
+    "copy": "Kopiera till urklipp",
+    "footer": "Klistra in den kopierade rapporten i ett nytt GitHub-ärende. Rapporten innehåller växelriktarens lokala IP-adress, MAC-adress och serienummer. De är bara användbara inom ditt hemnätverk. HTTP-lösenordet tas bort automatiskt. Om du vill kan du ta bort övriga uppgifter efter att du klistrat in.",
+    "new_issue": "Öppna ett nytt GitHub-ärende",
+    "status": {
+      "list_failed": "Kunde inte hämta enheter: __error__",
+      "no_devices": "Inga parkopplade Omnik-växelriktare hittades",
+      "running": "Körs…",
+      "report_ready": "Rapporten är klar. Kopiera den och klistra in den i ett nytt GitHub-ärende.",
+      "report_failed": "Rapporten misslyckades: __error__",
+      "unknown_error": "okänt fel",
+      "already_running": "En rapport körs redan. Vänta tills den är klar.",
+      "starting": "Startar…",
+      "start_failed": "Kunde inte starta rapporten: __error__",
+      "no_run_id": "servern returnerade inget körnings-id",
+      "timed_out": "Rapporten tog för lång tid (inget svar inom __seconds__ sekunder). Växelriktaren kan vara oåtkomlig.",
+      "pick_device": "Välj en enhet först.",
+      "enter_ip": "Ange en IP-adress först.",
+      "copied": "Kopierat till urklipp.",
+      "copy_failed": "Kunde inte kopiera automatiskt. Markera texten och kopiera den manuellt."
+    },
+    "progress": {
+      "arp": "Söker MAC-adress via ARP…",
+      "arp_ip": "Söker MAC-adressen för __ip__ via ARP…",
+      "probing_http": "Kontrollerar TCP-port 8899 och läser /js/status.js på __ip__…",
+      "probing_tcp": "Testar det binära protokollet med S/N __sn__…",
+      "skipping_tcp": "Test av det binära protokollet hoppades över: inget S/N för WiFi-modulen tillgängligt.",
+      "rendering": "Alla tester klara, skapar rapporten…"
+    },
+    "error": {
+      "device_not_found": "Ingen parkopplad enhet hittades med id __id__.",
+      "ip_required": "Ange en IP-adress.",
+      "ip_invalid": "\"__ip__\" är inte en giltig IPv4-adress."
+    }
   }
 }

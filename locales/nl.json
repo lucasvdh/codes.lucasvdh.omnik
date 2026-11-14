@@ -49,5 +49,52 @@
       "need_help_pairing": "Hulp nodig bij het koppelen?",
       "click_here_documentation": "Klik hier om de documentatie te bekijken."
     }
+  },
+  "settings": {
+    "title": "Diagnoserapport",
+    "lead": "Maakt een momentopname van één Omnik-omvormer: de instellingen, opgeslagen status, waarden van de capabilities en het resultaat van tests op het binaire protocol via TCP-poort 8899 en de HTTP-pagina /js/status.js. Het rapport blijft op je apparaat en wordt nergens heen gestuurd. Gebruik het als je een probleem meldt.",
+    "tab_paired": "Gekoppeld apparaat",
+    "tab_ip": "Via IP-adres",
+    "generate": "Rapport maken",
+    "generating": "Tests worden uitgevoerd…",
+    "hint_paired": "Gebruik dit als de omvormer aan Homey gekoppeld is, ook als hij als onbereikbaar wordt getoond.",
+    "ip_placeholder": "bijv. 192.168.1.42",
+    "probe_ip": "IP testen",
+    "probing": "Bezig met testen…",
+    "hint_ip": "Gebruik dit als koppelen mislukt. /js/status.js wordt getest zonder inlog en met de standaard admin/admin. Het binaire protocol op TCP-poort 8899 kan pas getest worden als het S/N van de WiFi-module bekend is.",
+    "output_placeholder": "Het rapport verschijnt hier nadat je het hebt gemaakt.",
+    "copy": "Kopiëren naar klembord",
+    "footer": "Plak het gekopieerde rapport in een nieuwe GitHub-issue. Het rapport bevat het lokale IP-adres, MAC-adres en serienummer van je omvormer. Die zijn alleen bruikbaar binnen je thuisnetwerk. Het HTTP-wachtwoord wordt automatisch verwijderd. Wil je de andere gegevens ook weghalen, pas de tekst dan aan na het plakken.",
+    "new_issue": "Nieuwe GitHub-issue openen",
+    "status": {
+      "list_failed": "Kan apparaten niet ophalen: __error__",
+      "no_devices": "Geen gekoppelde Omnik-omvormers gevonden",
+      "running": "Bezig…",
+      "report_ready": "Rapport klaar. Kopieer het en plak het in een nieuwe GitHub-issue.",
+      "report_failed": "Rapport mislukt: __error__",
+      "unknown_error": "onbekende fout",
+      "already_running": "Er loopt al een rapport. Wacht tot het klaar is.",
+      "starting": "Starten…",
+      "start_failed": "Kan het rapport niet starten: __error__",
+      "no_run_id": "de server gaf geen run-id terug",
+      "timed_out": "Het rapport duurde te lang (geen antwoord binnen __seconds__ seconden). De omvormer is mogelijk onbereikbaar.",
+      "pick_device": "Kies eerst een apparaat.",
+      "enter_ip": "Vul eerst een IP-adres in.",
+      "copied": "Gekopieerd naar klembord.",
+      "copy_failed": "Automatisch kopiëren lukte niet. Selecteer de tekst en kopieer hem handmatig."
+    },
+    "progress": {
+      "arp": "MAC-adres opzoeken via ARP…",
+      "arp_ip": "MAC-adres van __ip__ opzoeken via ARP…",
+      "probing_http": "TCP-poort 8899 controleren en /js/status.js lezen op __ip__…",
+      "probing_tcp": "Binaire protocol testen met S/N __sn__…",
+      "skipping_tcp": "Test van het binaire protocol overgeslagen: geen S/N van de WiFi-module beschikbaar.",
+      "rendering": "Alle tests klaar, rapport wordt gemaakt…"
+    },
+    "error": {
+      "device_not_found": "Geen gekoppeld apparaat gevonden met id __id__.",
+      "ip_required": "Vul een IP-adres in.",
+      "ip_invalid": "\"__ip__\" is geen geldig IPv4-adres."
+    }
   }
 }

@@ -49,5 +49,52 @@
       "need_help_pairing": "Potrzebujesz pomocy przy parowaniu?",
       "click_here_documentation": "Kliknij tutaj, aby przejrzeć dokumentację."
     }
+  },
+  "settings": {
+    "title": "Raport diagnostyczny",
+    "lead": "Tworzy migawkę jednego falownika Omnik: jego ustawienia, zapisany stan, wartości funkcji oraz wynik testów protokołu binarnego na porcie TCP 8899 i strony HTTP /js/status.js. Raport zostaje na twoim urządzeniu i nie jest nigdzie wysyłany. Użyj go, gdy zgłaszasz problem.",
+    "tab_paired": "Sparowane urządzenie",
+    "tab_ip": "Według adresu IP",
+    "generate": "Utwórz raport",
+    "generating": "Trwają testy…",
+    "hint_paired": "Użyj tej opcji, gdy falownik jest sparowany z Homey, także gdy jest oznaczony jako niedostępny.",
+    "ip_placeholder": "np. 192.168.1.42",
+    "probe_ip": "Testuj IP",
+    "probing": "Testowanie…",
+    "hint_ip": "Użyj tej opcji, gdy parowanie się nie udaje. /js/status.js jest testowany bez logowania i z domyślnym admin/admin. Protokół binarny na porcie TCP 8899 można przetestować dopiero, gdy znany jest numer S/N modułu WiFi.",
+    "output_placeholder": "Raport pojawi się tutaj po jego utworzeniu.",
+    "copy": "Kopiuj do schowka",
+    "footer": "Wklej skopiowany raport do nowego zgłoszenia na GitHubie. Raport zawiera lokalny adres IP, adres MAC i numer seryjny falownika. Są one przydatne tylko w twojej sieci domowej. Hasło HTTP jest usuwane automatycznie. Jeśli wolisz, usuń pozostałe identyfikatory po wklejeniu.",
+    "new_issue": "Otwórz nowe zgłoszenie na GitHubie",
+    "status": {
+      "list_failed": "Nie można pobrać urządzeń: __error__",
+      "no_devices": "Nie znaleziono sparowanych falowników Omnik",
+      "running": "Trwa…",
+      "report_ready": "Raport gotowy. Skopiuj go i wklej do nowego zgłoszenia na GitHubie.",
+      "report_failed": "Raport nie powiódł się: __error__",
+      "unknown_error": "nieznany błąd",
+      "already_running": "Raport jest już w toku. Poczekaj, aż się zakończy.",
+      "starting": "Uruchamianie…",
+      "start_failed": "Nie można uruchomić raportu: __error__",
+      "no_run_id": "serwer nie zwrócił identyfikatora uruchomienia",
+      "timed_out": "Przekroczono czas raportu (brak odpowiedzi w ciągu __seconds__ sekund). Falownik może być nieosiągalny.",
+      "pick_device": "Najpierw wybierz urządzenie.",
+      "enter_ip": "Najpierw wpisz adres IP.",
+      "copied": "Skopiowano do schowka.",
+      "copy_failed": "Nie można skopiować automatycznie. Zaznacz tekst i skopiuj go ręcznie."
+    },
+    "progress": {
+      "arp": "Wyszukiwanie adresu MAC przez ARP…",
+      "arp_ip": "Wyszukiwanie adresu MAC dla __ip__ przez ARP…",
+      "probing_http": "Sprawdzanie portu TCP 8899 i odczyt /js/status.js na __ip__…",
+      "probing_tcp": "Testowanie protokołu binarnego z S/N __sn__…",
+      "skipping_tcp": "Pominięto test protokołu binarnego: brak numeru S/N modułu WiFi.",
+      "rendering": "Wszystkie testy zakończone, tworzenie raportu…"
+    },
+    "error": {
+      "device_not_found": "Nie znaleziono sparowanego urządzenia o id __id__.",
+      "ip_required": "Wpisz adres IP.",
+      "ip_invalid": "\"__ip__\" nie jest prawidłowym adresem IPv4."
+    }
   }
 }
