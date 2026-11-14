@@ -49,5 +49,52 @@
       "need_help_pairing": "Need help pairing?",
       "click_here_documentation": "Click here to view the documentation."
     }
+  },
+  "settings": {
+    "title": "Diagnostic report",
+    "lead": "Creates a snapshot of one Omnik inverter: its settings, stored state, capability values and the result of probing the binary protocol on TCP port 8899 and the HTTP page /js/status.js. The report stays on your device and is not sent anywhere. Use it when you report a problem.",
+    "tab_paired": "Paired device",
+    "tab_ip": "By IP address",
+    "generate": "Generate report",
+    "generating": "Running probes…",
+    "hint_paired": "Use this when the inverter is paired with Homey, also when it is marked unavailable.",
+    "ip_placeholder": "e.g. 192.168.1.42",
+    "probe_ip": "Probe IP",
+    "probing": "Probing…",
+    "hint_ip": "Use this when pairing fails. /js/status.js is probed without login and with the default admin/admin. The binary protocol on TCP port 8899 can only be probed once the WiFi module S/N is known.",
+    "output_placeholder": "The report appears here after you generate it.",
+    "copy": "Copy to clipboard",
+    "footer": "Paste the copied report into a new GitHub issue. The report contains your inverter's local IP address, MAC address and serial number. These are only useful inside your home network. The HTTP password is removed automatically. If you prefer, remove the other identifiers after pasting.",
+    "new_issue": "Open a new GitHub issue",
+    "status": {
+      "list_failed": "Could not list devices: __error__",
+      "no_devices": "No paired Omnik inverters found",
+      "running": "Running…",
+      "report_ready": "Report ready. Copy it and paste it into a new GitHub issue.",
+      "report_failed": "Report failed: __error__",
+      "unknown_error": "unknown error",
+      "already_running": "A report is already running. Wait for it to finish.",
+      "starting": "Starting…",
+      "start_failed": "Could not start the report: __error__",
+      "no_run_id": "the server did not return a run id",
+      "timed_out": "The report timed out (no response within __seconds__ seconds). The inverter may be unreachable.",
+      "pick_device": "Choose a device first.",
+      "enter_ip": "Enter an IP address first.",
+      "copied": "Copied to clipboard.",
+      "copy_failed": "Could not copy automatically. Select the text and copy it manually."
+    },
+    "progress": {
+      "arp": "Looking up the MAC address via ARP…",
+      "arp_ip": "Looking up the MAC address of __ip__ via ARP…",
+      "probing_http": "Checking TCP port 8899 and reading /js/status.js on __ip__…",
+      "probing_tcp": "Probing the binary protocol with S/N __sn__…",
+      "skipping_tcp": "Skipping the binary protocol probe: no WiFi module S/N available.",
+      "rendering": "All probes done, creating the report…"
+    },
+    "error": {
+      "device_not_found": "No paired device found with id __id__.",
+      "ip_required": "Enter an IP address.",
+      "ip_invalid": "\"__ip__\" is not a valid IPv4 address."
+    }
   }
 }

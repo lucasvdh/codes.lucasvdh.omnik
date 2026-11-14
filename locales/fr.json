@@ -49,5 +49,52 @@
       "need_help_pairing": "Besoin d'aide pour le couplage?",
       "click_here_documentation": "Cliquez ici pour afficher la documentation."
     }
+  },
+  "settings": {
+    "title": "Rapport de diagnostic",
+    "lead": "Crée un instantané d'un onduleur Omnik : ses réglages, son état enregistré, les valeurs des capacités et le résultat des tests du protocole binaire sur le port TCP 8899 et de la page HTTP /js/status.js. Le rapport reste sur votre appareil et n'est envoyé nulle part. Utilisez-le pour signaler un problème.",
+    "tab_paired": "Appareil associé",
+    "tab_ip": "Par adresse IP",
+    "generate": "Créer le rapport",
+    "generating": "Tests en cours…",
+    "hint_paired": "Utilisez ceci lorsque l'onduleur est associé à Homey, même s'il est indiqué comme indisponible.",
+    "ip_placeholder": "ex. 192.168.1.42",
+    "probe_ip": "Tester l'IP",
+    "probing": "Test en cours…",
+    "hint_ip": "Utilisez ceci lorsque l'association échoue. /js/status.js est testé sans identifiants et avec admin/admin par défaut. Le protocole binaire sur le port TCP 8899 ne peut être testé qu'une fois le N/S du module WiFi connu.",
+    "output_placeholder": "Le rapport apparaît ici une fois créé.",
+    "copy": "Copier dans le presse-papiers",
+    "footer": "Collez le rapport copié dans un nouveau ticket GitHub. Le rapport contient l'adresse IP locale, l'adresse MAC et le numéro de série de votre onduleur. Ils ne sont utiles qu'à l'intérieur de votre réseau domestique. Le mot de passe HTTP est supprimé automatiquement. Si vous préférez, supprimez les autres identifiants après avoir collé le texte.",
+    "new_issue": "Ouvrir un nouveau ticket GitHub",
+    "status": {
+      "list_failed": "Impossible de lister les appareils : __error__",
+      "no_devices": "Aucun onduleur Omnik associé trouvé",
+      "running": "En cours…",
+      "report_ready": "Rapport prêt. Copiez-le et collez-le dans un nouveau ticket GitHub.",
+      "report_failed": "Échec du rapport : __error__",
+      "unknown_error": "erreur inconnue",
+      "already_running": "Un rapport est déjà en cours. Attendez qu'il se termine.",
+      "starting": "Démarrage…",
+      "start_failed": "Impossible de démarrer le rapport : __error__",
+      "no_run_id": "le serveur n'a pas renvoyé d'identifiant d'exécution",
+      "timed_out": "Le rapport a expiré (aucune réponse en __seconds__ secondes). L'onduleur est peut-être injoignable.",
+      "pick_device": "Choisissez d'abord un appareil.",
+      "enter_ip": "Saisissez d'abord une adresse IP.",
+      "copied": "Copié dans le presse-papiers.",
+      "copy_failed": "Copie automatique impossible. Sélectionnez le texte et copiez-le manuellement."
+    },
+    "progress": {
+      "arp": "Recherche de l'adresse MAC via ARP…",
+      "arp_ip": "Recherche de l'adresse MAC de __ip__ via ARP…",
+      "probing_http": "Vérification du port TCP 8899 et lecture de /js/status.js sur __ip__…",
+      "probing_tcp": "Test du protocole binaire avec le N/S __sn__…",
+      "skipping_tcp": "Test du protocole binaire ignoré : aucun N/S du module WiFi disponible.",
+      "rendering": "Tous les tests sont terminés, création du rapport…"
+    },
+    "error": {
+      "device_not_found": "Aucun appareil associé trouvé avec l'identifiant __id__.",
+      "ip_required": "Saisissez une adresse IP.",
+      "ip_invalid": "« __ip__ » n'est pas une adresse IPv4 valide."
+    }
   }
 }

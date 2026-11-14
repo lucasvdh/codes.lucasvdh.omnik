@@ -49,5 +49,52 @@
       "need_help_pairing": "¿Necesita ayuda para emparejar?",
       "click_here_documentation": "Haga clic aquí para ver la documentación."
     }
+  },
+  "settings": {
+    "title": "Informe de diagnóstico",
+    "lead": "Crea una instantánea de un inversor Omnik: su configuración, estado guardado, valores de las capacidades y el resultado de probar el protocolo binario en el puerto TCP 8899 y la página HTTP /js/status.js. El informe se queda en tu dispositivo y no se envía a ningún sitio. Úsalo cuando informes de un problema.",
+    "tab_paired": "Dispositivo emparejado",
+    "tab_ip": "Por dirección IP",
+    "generate": "Crear informe",
+    "generating": "Ejecutando pruebas…",
+    "hint_paired": "Usa esto cuando el inversor esté emparejado con Homey, también si aparece como no disponible.",
+    "ip_placeholder": "p. ej. 192.168.1.42",
+    "probe_ip": "Probar IP",
+    "probing": "Probando…",
+    "hint_ip": "Usa esto cuando falle el emparejamiento. /js/status.js se prueba sin credenciales y con admin/admin por defecto. El protocolo binario en el puerto TCP 8899 solo se puede probar cuando se conoce el N/S del módulo WiFi.",
+    "output_placeholder": "El informe aparece aquí después de crearlo.",
+    "copy": "Copiar al portapapeles",
+    "footer": "Pega el informe copiado en una nueva incidencia de GitHub. El informe contiene la dirección IP local, la dirección MAC y el número de serie de tu inversor. Solo son útiles dentro de tu red doméstica. La contraseña HTTP se elimina automáticamente. Si lo prefieres, elimina los demás identificadores después de pegarlo.",
+    "new_issue": "Abrir una nueva incidencia en GitHub",
+    "status": {
+      "list_failed": "No se pudieron obtener los dispositivos: __error__",
+      "no_devices": "No se encontraron inversores Omnik emparejados",
+      "running": "En curso…",
+      "report_ready": "Informe listo. Cópialo y pégalo en una nueva incidencia de GitHub.",
+      "report_failed": "El informe falló: __error__",
+      "unknown_error": "error desconocido",
+      "already_running": "Ya hay un informe en curso. Espera a que termine.",
+      "starting": "Iniciando…",
+      "start_failed": "No se pudo iniciar el informe: __error__",
+      "no_run_id": "el servidor no devolvió un id de ejecución",
+      "timed_out": "El informe agotó el tiempo (sin respuesta en __seconds__ segundos). Es posible que el inversor no esté accesible.",
+      "pick_device": "Elige primero un dispositivo.",
+      "enter_ip": "Introduce primero una dirección IP.",
+      "copied": "Copiado al portapapeles.",
+      "copy_failed": "No se pudo copiar automáticamente. Selecciona el texto y cópialo manualmente."
+    },
+    "progress": {
+      "arp": "Buscando la dirección MAC mediante ARP…",
+      "arp_ip": "Buscando la dirección MAC de __ip__ mediante ARP…",
+      "probing_http": "Comprobando el puerto TCP 8899 y leyendo /js/status.js en __ip__…",
+      "probing_tcp": "Probando el protocolo binario con N/S __sn__…",
+      "skipping_tcp": "Prueba del protocolo binario omitida: no hay N/S del módulo WiFi disponible.",
+      "rendering": "Todas las pruebas terminadas, creando el informe…"
+    },
+    "error": {
+      "device_not_found": "No se encontró ningún dispositivo emparejado con id __id__.",
+      "ip_required": "Introduce una dirección IP.",
+      "ip_invalid": "\"__ip__\" no es una dirección IPv4 válida."
+    }
   }
 }

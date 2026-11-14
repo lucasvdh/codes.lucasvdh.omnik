@@ -53,12 +53,12 @@ module.exports = {
       .getDevices()
       .find((d) => deviceId(d) === wanted);
     if (!device) {
-      throw new Error(`No paired device found with id ${wanted}`);
+      throw new Error(homey.__("settings.error.device_not_found", { id: wanted }));
     }
 
     const runId = randomUUID();
     runInBackground(homey, runId, async (onProgress) => {
-      onProgress("Looking up MAC via ARP…");
+      onProgress("arp");
       const ip = (device.getSettings() as { ip?: string }).ip;
       const network = ip ? await collectNetworkForIp(homey, ip) : undefined;
       return generateDeviceReport({ device, ...environment(homey), network, onProgress });
@@ -69,12 +69,12 @@ module.exports = {
 
   async probeByIp({ homey, body }: ProbeIpArgs): Promise<{ runId: string }> {
     const ip = typeof body?.ip === "string" ? body.ip.trim() : "";
-    if (!ip) throw new Error("ip is required");
-    if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) throw new Error(`"${ip}" doesn't look like an IPv4 address`);
+    if (!ip) throw new Error(homey.__("settings.error.ip_required"));
+    if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) throw new Error(homey.__("settings.error.ip_invalid", { ip }));
 
     const runId = randomUUID();
     runInBackground(homey, runId, async (onProgress) => {
-      onProgress(`Looking up MAC for ${ip} via ARP…`);
+      onProgress("arp_ip", { ip });
       const network = await collectNetworkForIp(homey, ip);
       return generateIpReport({ ip, ...environment(homey), network, onProgress });
     });
@@ -106,7 +106,8 @@ function runInBackground(
       .catch((err: unknown) => homey.app.error(`[report] realtime emit ${event} failed`, err));
   };
 
-  const onProgress: ProgressCallback = (message) => emit(EVENT_PROGRESS, { message });
+  const onProgress: ProgressCallback = (key, tokens) =>
+    emit(EVENT_PROGRESS, { message: homey.__(`settings.progress.${key}`, tokens) });
 
   work(onProgress)
     .then((report) => emit(EVENT_COMPLETE, { markdown: renderMarkdown(report) }))

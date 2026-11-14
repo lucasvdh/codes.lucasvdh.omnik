@@ -28,44 +28,58 @@
   </style>
 </head>
 <body>
-<h1>Diagnostic report</h1>
-<p class="lead">
-  Generates a snapshot of one Omnik inverter: settings, cached state, capability values and the result of probing both the binary TCP protocol on port 8899 and the HTTP <code>/js/status.js</code> fallback. The report stays on your device; nothing is auto-sent. Use it when reporting an issue.
-</p>
+<h1 data-i18n="settings.title"></h1>
+<p class="lead" data-i18n="settings.lead"></p>
 
 <div class="tabs">
-  <button class="tab active" data-tab="paired">Paired device</button>
-  <button class="tab" data-tab="ip">By IP address</button>
+  <button class="tab active" data-tab="paired" data-i18n="settings.tab_paired"></button>
+  <button class="tab" data-tab="ip" data-i18n="settings.tab_ip"></button>
 </div>
 
 <div class="pane active" id="pane-paired">
   <div class="row">
     <select id="device"></select>
-    <button id="generate">Generate report</button>
+    <button id="generate" data-i18n="settings.generate"></button>
   </div>
-  <p class="hint">Use this when the inverter is paired with Homey, even if it's currently marked unavailable.</p>
+  <p class="hint" data-i18n="settings.hint_paired"></p>
 </div>
 
 <div class="pane" id="pane-ip">
   <div class="row">
-    <input id="ip" type="text" placeholder="e.g. 192.168.1.42" />
-    <button id="generate-ip">Probe IP</button>
+    <input id="ip" type="text" data-i18n-placeholder="settings.ip_placeholder" />
+    <button id="generate-ip" data-i18n="settings.probe_ip"></button>
   </div>
-  <p class="hint">Use this when pairing fails so option A isn't available yet. HTTP <code>/js/status.js</code> is probed with no auth and with the <code>admin/admin</code> default; the binary protocol on TCP/8899 can only be probed once the WiFi-stick S/N is known.</p>
+  <p class="hint" data-i18n="settings.hint_ip"></p>
 </div>
 
-<textarea id="output" placeholder="The report will appear here after you click 'Generate report' / 'Probe IP'." readonly></textarea>
+<textarea id="output" data-i18n-placeholder="settings.output_placeholder" readonly></textarea>
 <div class="row" style="margin-top: 0.5rem;">
-  <button id="copy" class="secondary" disabled>Copy to clipboard</button>
+  <button id="copy" class="secondary" disabled data-i18n="settings.copy"></button>
 </div>
 <div id="status" class="status"></div>
 
 <p class="footer">
-  Paste the copied report into a new <a href="https://github.com/lucasvdh/codes.lucasvdh.omnik/issues/new" target="_blank">GitHub issue</a>. The report contains your inverter's local IP, MAC address and serial number — these are only useful on your home network, not a security risk to share. The HTTP password is automatically redacted. If you'd rather strip the other identifiers before sharing, edit the text after pasting.
+  <span data-i18n="settings.footer"></span>
+  <a href="https://github.com/lucasvdh/codes.lucasvdh.omnik/issues/new" target="_blank" rel="noopener" data-i18n="settings.new_issue"></a>
 </p>
 
 <script>
   function onHomeyReady(Homey) {
+    // Translate with __token__ replacement done here, so it doesn't depend on Homey.__ token support.
+    function t(key, tokens) {
+      let text = Homey.__(key) || key;
+      Object.keys(tokens || {}).forEach(function (name) {
+        text = text.split('__' + name + '__').join(String(tokens[name]));
+      });
+      return text;
+    }
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+      el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
+    });
+
     const deviceSelect = document.getElementById('device');
     const generateBtn = document.getElementById('generate');
     const ipInput = document.getElementById('ip');
@@ -95,12 +109,16 @@
 
     Homey.api('GET', '/devices', null, function (err, devices) {
       if (err) {
-        showStatus('err', 'Could not list devices: ' + (err.message || err));
+        showStatus('err', t('settings.status.list_failed', { error: err.message || err }));
         generateBtn.disabled = true;
         return;
       }
       if (!devices || devices.length === 0) {
-        deviceSelect.innerHTML = '<option disabled selected>No paired Omnik inverters found</option>';
+        const empty = document.createElement('option');
+        empty.disabled = true;
+        empty.selected = true;
+        empty.textContent = t('settings.status.no_devices');
+        deviceSelect.appendChild(empty);
         generateBtn.disabled = true;
         return;
       }
@@ -135,20 +153,20 @@
 
     Homey.on('omnik:report:progress', function (data) {
       if (!activeRun || data.runId !== activeRun.runId) return;
-      showStatus('ok', data.message || 'Running…');
+      showStatus('ok', data.message || t('settings.status.running'));
     });
     Homey.on('omnik:report:complete', function (data) {
       if (!activeRun || data.runId !== activeRun.runId) return;
-      finishRun('ok', 'Report ready. Copy it and paste into a new GitHub issue.', data.markdown || '');
+      finishRun('ok', t('settings.status.report_ready'), data.markdown || '');
     });
     Homey.on('omnik:report:error', function (data) {
       if (!activeRun || data.runId !== activeRun.runId) return;
-      finishRun('err', 'Report failed: ' + (data.message || 'unknown error'));
+      finishRun('err', t('settings.status.report_failed', { error: data.message || t('settings.status.unknown_error') }));
     });
 
     function startRun(button, runningLabel, restoreLabel, call) {
       if (activeRun) {
-        showStatus('err', 'A report is already running — please wait for it to finish.');
+        showStatus('err', t('settings.status.already_running'));
         return;
       }
       clearStatus();
@@ -156,19 +174,19 @@
       button.textContent = runningLabel;
       output.value = '';
       copyBtn.disabled = true;
-      showStatus('ok', 'Starting…');
+      showStatus('ok', t('settings.status.starting'));
       call(function (err, result) {
         if (err) {
           button.disabled = false;
           button.textContent = restoreLabel;
-          showStatus('err', 'Failed to start report: ' + (err.message || err));
+          showStatus('err', t('settings.status.start_failed', { error: err.message || err }));
           return;
         }
         const runId = result && result.runId;
         if (!runId) {
           button.disabled = false;
           button.textContent = restoreLabel;
-          showStatus('err', 'Failed to start report: server did not return a runId.');
+          showStatus('err', t('settings.status.start_failed', { error: t('settings.status.no_run_id') }));
           return;
         }
         activeRun = {
@@ -176,7 +194,7 @@
           button: button,
           restoreLabel: restoreLabel,
           watchdog: setTimeout(function () {
-            finishRun('err', 'Report timed out (no response within ' + (WATCHDOG_MS / 1000) + 's). The inverter may be unreachable.');
+            finishRun('err', t('settings.status.timed_out', { seconds: WATCHDOG_MS / 1000 }));
           }, WATCHDOG_MS),
         };
       });
@@ -185,10 +203,10 @@
     generateBtn.addEventListener('click', function () {
       const deviceId = deviceSelect.value;
       if (!deviceId) {
-        showStatus('err', 'Pick a device first.');
+        showStatus('err', t('settings.status.pick_device'));
         return;
       }
-      startRun(generateBtn, 'Running probes…', 'Generate report', function (cb) {
+      startRun(generateBtn, t('settings.generating'), t('settings.generate'), function (cb) {
         Homey.api('POST', '/report', { deviceId: deviceId }, cb);
       });
     });
@@ -196,10 +214,10 @@
     generateIpBtn.addEventListener('click', function () {
       const ip = (ipInput.value || '').trim();
       if (!ip) {
-        showStatus('err', 'Enter an IP address first.');
+        showStatus('err', t('settings.status.enter_ip'));
         return;
       }
-      startRun(generateIpBtn, 'Probing…', 'Probe IP', function (cb) {
+      startRun(generateIpBtn, t('settings.probing'), t('settings.probe_ip'), function (cb) {
         Homey.api('POST', '/probe-ip', { ip: ip }, cb);
       });
     });
@@ -208,8 +226,8 @@
       clearStatus();
       if (!output.value) return;
       const finish = function (ok) {
-        if (ok) showStatus('ok', 'Copied to clipboard.');
-        else showStatus('err', 'Could not copy automatically - select the text manually and copy.');
+        if (ok) showStatus('ok', t('settings.status.copied'));
+        else showStatus('err', t('settings.status.copy_failed'));
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(output.value).then(function () { finish(true); }, function () { finish(false); });

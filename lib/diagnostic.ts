@@ -74,7 +74,9 @@ interface ProbeRunner {
   (): Promise<unknown>;
 }
 
-export type ProgressCallback = (message: string) => void;
+/** Locale keys under `settings.progress.*`; the Homey edge translates them. */
+export type ProgressKey = "arp" | "arp_ip" | "probing_http" | "probing_tcp" | "skipping_tcp" | "rendering";
+export type ProgressCallback = (key: ProgressKey, tokens?: Record<string, string | number>) => void;
 
 export async function generateDeviceReport(opts: {
   device: HomeyDevice;
@@ -185,9 +187,9 @@ async function runAllProbes(opts: {
 }): Promise<{ probes: ProbeResult[]; statusJs: StatusJsSnapshot[] }> {
   const { ip, auth, onProgress } = opts;
   let { wifiSn } = opts;
-  const progress = (msg: string) => onProgress?.(msg);
+  const progress: ProgressCallback = (key, tokens) => onProgress?.(key, tokens);
 
-  progress(`Checking TCP/8899 reachability and capturing /js/status.js on ${ip}…`);
+  progress("probing_http", { ip });
 
   // Phase 1: TCP reachability + raw /js/status.js capture. The raw capture
   // always returns the response body (even when the typed parser would
@@ -242,7 +244,7 @@ async function runAllProbes(opts: {
   // Phase 2: TCP binary protocol (only meaningful with a known S/N).
   const phase2Tasks: Array<Promise<ProbeResult>> = [];
   if (wifiSn && wifiSn > 0) {
-    progress(`Probing TCP binary protocol with S/N ${wifiSn}…`);
+    progress("probing_tcp", { sn: wifiSn });
     const sn = wifiSn;
     phase2Tasks.push(
       runProbe(
@@ -260,7 +262,7 @@ async function runAllProbes(opts: {
       ),
     );
   } else {
-    progress("Skipping TCP binary probe — no WiFi-stick S/N available.");
+    progress("skipping_tcp");
     phase2Tasks.push(
       runProbe(
         "TCP binary protocol",
@@ -274,7 +276,7 @@ async function runAllProbes(opts: {
     );
   }
   const phase2 = await Promise.all(phase2Tasks);
-  progress("All probes done, rendering report…");
+  progress("rendering");
 
   return { probes: [...phase1, ...phase2], statusJs };
 }
