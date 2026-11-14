@@ -59,6 +59,7 @@
         },
         "value": 5,
         "min": 1,
+            "max": 1440,
         "units": {
           "en": "minutes",
           "nl": "minuten",

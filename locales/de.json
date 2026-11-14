@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
+    "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen.",
+    "invalid_ip": "Geben Sie eine gültige IPv4-Adresse ein, zum Beispiel 192.168.1.42.",
+    "invalid_wifi_sn": "Geben Sie die S/N des WiFi-Moduls als Zahl mit höchstens 10 Ziffern ein, nicht größer als 4294967295."
   },
   "device": {
     "error": {

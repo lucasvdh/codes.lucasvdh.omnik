@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Något gick fel. Försök igen."
+    "generic": "Något gick fel. Försök igen.",
+    "invalid_ip": "Ange en giltig IPv4-adress, till exempel 192.168.1.42.",
+    "invalid_wifi_sn": "Ange WiFi-modulens S/N som ett tal med högst 10 siffror, inte större än 4294967295."
   },
   "device": {
     "error": {

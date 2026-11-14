@@ -25,10 +25,15 @@ describe("isRetryable", () => {
 
 describe("classifySocketError", () => {
   it("maps refused and unreachable codes to HostUnreachableError", () => {
-    for (const code of ["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH"]) {
+    for (const code of ["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH", "EHOSTDOWN", "ENOTFOUND"]) {
       const err = Object.assign(new Error(code), { code });
       assert.ok(classifySocketError(err) instanceof HostUnreachableError, code);
     }
+  });
+
+  it("maps a connect timeout to TimeoutError so pairing sends the user back to the IP", () => {
+    const err = Object.assign(new Error("connect ETIMEDOUT"), { code: "ETIMEDOUT" });
+    assert.ok(classifySocketError(err) instanceof TimeoutError);
   });
 
   it("passes other errors through", () => {

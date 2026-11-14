@@ -12,6 +12,7 @@ import {
 import { OmnikHttpApi, type DiscoveryInfo, type HttpAuth } from "../../lib/omnik-http-client";
 import { OmnikLocalApi } from "../../lib/omnik-tcp-client";
 import type { Device, DeviceProtocol } from "../../lib/types";
+import { normalizeIpv4, parseWifiSn } from "../../lib/validation";
 
 type DeviceArg = { device: Homey.Device };
 
@@ -21,6 +22,7 @@ interface PairingState {
   manualSn: number | null;
   discovery: DiscoveryInfo | null;
   protocol: DeviceProtocol | null;
+  probing: boolean;
 }
 
 class OmnikLocal extends Homey.Driver {
@@ -58,6 +60,7 @@ class OmnikLocal extends Homey.Driver {
       manualSn: null,
       discovery: null,
       protocol: null,
+      probing: false,
     };
 
     session.setHandler("setIpAddress", async (ip: string) => {
@@ -70,8 +73,13 @@ class OmnikLocal extends Homey.Driver {
       await session.showView("probing");
     });
 
-    session.setHandler("submitManualSn", async (sn: number) => {
-      state.manualSn = sn;
+    session.setHandler("submitManualSn", async (sn: unknown) => {
+      const wifiSn = parseWifiSn(sn);
+      if (wifiSn === null) {
+        await this.flashError(session, this.homey.__("error.invalid_wifi_sn"), "manual_entry");
+        return;
+      }
+      state.manualSn = wifiSn;
       await session.showView("probing");
     });
 
@@ -94,7 +102,16 @@ class OmnikLocal extends Homey.Driver {
         await this.flashError(session, this.homey.__("pair.omnik-local.error.missing_ip_address"));
         return;
       }
+      const ip = normalizeIpv4(state.ip);
+      if (!ip) {
+        await this.flashError(session, this.homey.__("error.invalid_ip"));
+        return;
+      }
+      state.ip = ip;
 
+      // A double tap on a submit button must not start a second discovery.
+      if (state.probing) return;
+      state.probing = true;
       try {
         const result = await this.discoverInverter(state.ip, state.auth, state.manualSn);
         state.discovery = result.discovery;
@@ -102,40 +119,37 @@ class OmnikLocal extends Homey.Driver {
         await session.showView("confirm");
       } catch (error) {
         if (error instanceof UnauthorizedError) {
-          await session.showView("auth_required");
+          if (state.auth) {
+            await this.flashError(session, this.homey.__("pair.omnik-local.error.auth_failed"), "auth_required");
+          } else {
+            await session.showView("auth_required");
+          }
           return;
         }
 
         const message = this.translatePairError(error);
 
-        // If the user already provided a manual S/N and TCP still failed,
-        // bounce back to manual_entry so they can correct the S/N.
+        // A manual S/N that still fails is most likely mistyped.
         if (state.manualSn !== null) {
           await this.flashError(session, message, "manual_entry");
           return;
         }
 
-        // For "host unreachable" / "timeout" the IP itself is wrong or the
-        // device is offline — TCP would fail for the same reason, so a manual
-        // S/N entry won't help. Bounce back to the pair view.
-        if (error instanceof HostUnreachableError || error instanceof TimeoutError) {
+        // A wrong IP, an offline module or a sleeping inverter: a manual S/N won't help.
+        if (
+          error instanceof HostUnreachableError ||
+          error instanceof TimeoutError ||
+          error instanceof InverterAsleepError
+        ) {
           await this.flashError(session, message, "pair");
           return;
         }
 
-        // Inverter is asleep — manual S/N entry won't unstick it, the inverter
-        // itself isn't reporting. Bounce back to the pair view so the user can
-        // retry once the sun is up.
-        if (error instanceof InverterAsleepError) {
-          await this.flashError(session, message, "pair");
-          return;
-        }
-
-        // Other failures (ParseError, UnexpectedResponseError) mean the host
-        // responded but /js/status.js didn't give us a usable payload. TCP
-        // may still work, so offer the manual S/N route.
+        // The module answered but status.js was unusable; TCP with a manual S/N may still work.
         await session.showView("manual_entry");
         await session.emit("alert", message);
+      } finally {
+        state.probing = false;
       }
     });
 
@@ -212,14 +226,18 @@ class OmnikLocal extends Homey.Driver {
     const httpApi = new OmnikHttpApi({ address: ip, auth: auth ?? undefined });
     const discovery = await httpApi.discover();
 
-    const wifiSn = Number(discovery.wifiStickSn);
-    if (Number.isFinite(wifiSn) && wifiSn > 0) {
+    // The S/N becomes the device id (a number), so it must be numeric.
+    if (!/^\d+$/.test(discovery.wifiStickSn)) {
+      throw new ParseError(`m2mMid "${discovery.wifiStickSn}" is not numeric`);
+    }
+
+    // S/Ns above 32 bits (some 604/646 modules) can't be sent over TCP; those stay on HTTP.
+    const wifiSn = parseWifiSn(discovery.wifiStickSn);
+    if (wifiSn !== null) {
       try {
         const tcpApi = new OmnikLocalApi({ address: ip, wifiSn });
         const tcpData = await tcpApi.getData();
-        // Prefer TCP — it surfaces temperature & per-phase voltage that HTTP doesn't.
-        // Refresh discovery's data with the live TCP sample so the confirm view
-        // can show the richer values.
+        // TCP also delivers voltage, frequency and temperature.
         return {
           discovery: { ...discovery, data: tcpData },
           protocol: "tcp",

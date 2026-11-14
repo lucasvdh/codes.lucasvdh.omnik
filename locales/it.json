@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Qualcosa è andato storto. Riprova."
+    "generic": "Qualcosa è andato storto. Riprova.",
+    "invalid_ip": "Inserisci un indirizzo IPv4 valido, ad esempio 192.168.1.42.",
+    "invalid_wifi_sn": "Inserisci il S/N del modulo WiFi come numero di massimo 10 cifre, non superiore a 4294967295."
   },
   "device": {
     "error": {

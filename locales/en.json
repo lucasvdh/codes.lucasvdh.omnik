@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Something went wrong. Please try again."
+    "generic": "Something went wrong. Please try again.",
+    "invalid_ip": "Enter a valid IPv4 address, for example 192.168.1.42.",
+    "invalid_wifi_sn": "Enter the WiFi module S/N as a number of at most 10 digits, no larger than 4294967295."
   },
   "device": {
     "error": {

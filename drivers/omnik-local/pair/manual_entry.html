@@ -38,7 +38,8 @@
             Homey.alert(Homey.__("pair.omnik-local.error.missing_wifi_sn"));
             return;
         }
-        Homey.emit("submitManualSn", Number(sn));
+        this.disabled = true; // the view reloads after probing; prevents a second discovery
+        Homey.emit("submitManualSn", sn);
     });
 </script>
 

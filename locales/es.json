@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Algo salió mal. Inténtalo de nuevo."
+    "generic": "Algo salió mal. Inténtalo de nuevo.",
+    "invalid_ip": "Introduce una dirección IPv4 válida, por ejemplo 192.168.1.42.",
+    "invalid_wifi_sn": "Introduce el N/S del módulo WiFi como un número de 10 dígitos como máximo, no mayor que 4294967295."
   },
   "device": {
     "error": {

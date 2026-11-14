@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Une erreur s'est produite. Veuillez réessayer."
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "invalid_ip": "Saisissez une adresse IPv4 valide, par exemple 192.168.1.42.",
+    "invalid_wifi_sn": "Saisissez le N/S du module WiFi sous forme de nombre de 10 chiffres au maximum, pas plus grand que 4294967295."
   },
   "device": {
     "error": {
