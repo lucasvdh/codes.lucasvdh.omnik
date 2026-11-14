@@ -86,8 +86,7 @@ class OmnikLocal extends Homey.Driver {
     session.setHandler("showView", async (view: string) => {
       this.log("[pair] show view", view);
 
-      // When the user navigates back to the IP entry, drop the cached probe
-      // results so the next attempt is a clean slate.
+      // Back on the IP screen: forget the previous attempt.
       if (view === "pair") {
         state.auth = null;
         state.manualSn = null;
@@ -193,15 +192,7 @@ class OmnikLocal extends Homey.Driver {
     });
   }
 
-  /**
-   * Discover the inverter and decide which protocol to use.
-   *
-   * 1. If a manual S/N was provided, skip HTTP and go straight to TCP.
-   * 2. Otherwise: HTTP `/js/status.js` (optional auth) → m2mMid (S/N).
-   * 3. With the discovered S/N, try TCP. Prefer TCP when it works (more
-   *    capabilities: temperature, AC voltage). Fall back to HTTP for runtime
-   *    data if TCP fails.
-   */
+  /** A manual S/N goes straight to TCP; otherwise status.js gives the S/N and TCP is preferred. */
   private async discoverInverter(
     ip: string,
     auth: HttpAuth | null,

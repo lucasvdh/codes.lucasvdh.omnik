@@ -4,7 +4,6 @@ import type HomeyDevice from "homey/lib/Device";
 import { OmnikHttpApi } from "./omnik-http-client";
 import { OmnikLocalApi, OmnikProtocol, type InverterData } from "./omnik-tcp-client";
 
-// Settings keys whose value must never appear in a diagnostic report.
 const SECRET_SETTINGS_KEYS = new Set<string>(["http_user", "http_password"]);
 
 // status.js can contain the home Wi-Fi name and key and the public IP; users paste reports publicly.
@@ -126,11 +125,7 @@ export async function generateDeviceReport(opts: {
   };
 }
 
-/**
- * Build a report against an IP address only, used when the inverter refuses to
- * pair. Without a known WiFi-stick S/N up-front we can still extract it from
- * the raw /js/status.js capture and feed it into the binary TCP probe.
- */
+/** For an inverter that won't pair; the S/N for the TCP probe comes from status.js. */
 export async function generateIpReport(opts: {
   ip: string;
   appVersion: string;
@@ -200,11 +195,7 @@ async function runAllProbes(opts: {
 
   progress("probing_http", { ip });
 
-  // Phase 1: TCP reachability + raw /js/status.js capture. The raw capture
-  // always returns the response body (even when the typed parser would
-  // explode on an unknown variable name), so we can both diagnose unknown
-  // firmware quirks and recover the WiFi-stick S/N from `m2mMid` as a
-  // fallback wifiSn for the TCP binary probe below.
+  // The raw status.js capture keeps the body even when parsing fails, and yields the S/N for TCP.
   const phase1Tasks: Array<Promise<ProbeResult>> = [
     runProbe(
       "TCP/8899 port reachability",
@@ -250,7 +241,6 @@ async function runAllProbes(opts: {
     if (discoveredMid) wifiSn = Number(discoveredMid);
   }
 
-  // Phase 2: TCP binary protocol (only meaningful with a known S/N).
   const phase2Tasks: Array<Promise<ProbeResult>> = [];
   if (wifiSn && wifiSn > 0) {
     progress("probing_tcp", { sn: wifiSn });
@@ -350,9 +340,7 @@ async function probeRawStatusJs(
     }
   }
 
-  // A non-2xx response is still useful for diagnostics — we want to see the
-  // body even on 401. Don't throw; the snapshot records `statusCode` so the
-  // renderer can flag it.
+  // Non-2xx bodies (even 401) are kept: they help diagnose firmware quirks.
   return snapshot;
 }
 
@@ -656,11 +644,7 @@ function parseResultLabel(s: StatusJsSnapshot): string {
   return "⏭ not attempted (device fields not extracted)";
 }
 
-/**
- * For raw /js/status.js probes the responseSummary contains the full body
- * preview, which crowds out the table cell. Use the snapshot's HTTP status +
- * extracted m2mMid as a much shorter at-a-glance summary instead.
- */
+/** Raw status.js probes get a short status + S/N summary instead of the whole body. */
 function probeTableSummary(p: ProbeResult): string {
   if (isStatusJsSnapshot(p.responseRaw)) {
     const s = p.responseRaw;

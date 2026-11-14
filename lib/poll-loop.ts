@@ -10,10 +10,7 @@ export interface PollLoopOptions {
   onError: (err: unknown) => void;
 }
 
-/**
- * One poll at a time. The next poll is scheduled after the previous one finished, and a poll
- * requested while one is running (settings change) runs right after it, never in parallel.
- */
+/** Never two polls at once: a poll requested during a poll runs right after it. */
 export class PollLoop {
   private timer?: NodeJS.Timeout;
   private polling = false;
@@ -27,7 +24,6 @@ export class PollLoop {
     this.pollNow();
   }
 
-  /** Poll as soon as possible: now when idle, otherwise right after the running poll. */
   pollNow(): void {
     if (this.stopped) return;
     if (this.polling) {

@@ -1,10 +1,8 @@
 import Homey from "homey";
 import { PollLoop } from "./poll-loop";
 
-/** Base class for inverter devices that poll their hardware through a PollLoop. */
 export abstract class InverterDevice extends Homey.Device {
-  /** Refresh interval in minutes, from the `interval` setting. */
-  protected interval?: number;
+  protected interval?: number; // minutes
 
   private loop?: PollLoop;
 
@@ -24,13 +22,11 @@ export abstract class InverterDevice extends Homey.Device {
 
   abstract checkProduction(): Promise<void>;
 
-  /** Apply a new polling interval (minutes). */
   protected resetInterval(newIntervalMinutes: number): void {
     this.interval = newIntervalMinutes;
     this.loop?.reschedule();
   }
 
-  /** Poll now, or right after the poll that is running. Never runs two polls at once. */
   protected pollNow(): void {
     this.loop?.pollNow();
   }

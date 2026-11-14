@@ -20,17 +20,7 @@ export interface InverterData {
 }
 
 export class OmnikProtocol {
-  /**
-   * Build the binary request frame the Omnik WiFi logger expects on TCP/8899.
-   *
-   * Frame layout (20 bytes):
-   *   [0..3]   magic header   0x68 0x02 0x40 0x30
-   *   [4..7]   serial bytes   logger S/N as little-endian hex
-   *   [8..11]  serial bytes   same S/N repeated
-   *   [12..13] command        0x01 0x00
-   *   [14]     checksum       (115 + sum of bytes 4..11) low byte
-   *   [15]     terminator     0x16
-   */
+  /** Request frame for TCP/8899; layout in docs/development/protocol.md. */
   static buildRequest(serialNumber: number): Buffer {
     // The S/N is sent as 4 bytes; a larger value would silently produce a broken frame.
     if (!Number.isInteger(serialNumber) || serialNumber <= 0 || serialNumber > 0xffffffff) {
@@ -59,18 +49,7 @@ export class OmnikProtocol {
     return buffer;
   }
 
-  /**
-   * Parse a response frame from the Omnik WiFi logger.
-   *
-   * Offsets follow the open-source InverterMsg format used by Woutrrr/Omnik-Data-Logger:
-   *   15..30  ASCII inverter name (16 bytes)
-   *   31      inverter temperature (Int16BE, /10 °C)
-   *   51..56  AC voltages L1/L2/L3 (Int16BE, /10 V) — averaged across positive phases
-   *   57      AC frequency (UInt16BE, /100 Hz)
-   *   59..68  AC powers L1/L2/L3 (Int16BE, W) — summed (positive phases only)
-   *   69      E-Today (UInt16BE, /100 kWh)
-   *   71      E-Total (UInt32BE, /10 kWh, lifetime cumulative)
-   */
+  /** Offsets and encodings: docs/development/protocol.md. */
   static parseResponse(data: Buffer): InverterData {
     if (data.length < 75) {
       throw new ParseError(`response too short (${data.length} bytes)`);
@@ -90,9 +69,7 @@ export class OmnikProtocol {
       ? phaseVoltages.reduce((sum, v) => sum + v, 0) / phaseVoltages.length / 10
       : 0;
 
-    // Sensors that are unset/unsupported send 0xFFFF (UInt16) or 0xFFFFFFFF (UInt32).
-    // Clamp those to NaN so the device layer can ignore them instead of writing
-    // 655.35 kWh or 429496729.5 kWh into the meter.
+    // Missing sensors send 0xFFFF / 0xFFFFFFFF / -1; as NaN they never reach the meters.
     const rawFreq = data.readUInt16BE(57);
     const rawDaily = data.readUInt16BE(69);
     const rawTotal = data.readUInt32BE(71);
@@ -160,7 +137,6 @@ export class OmnikLocalApi {
         fn();
       };
 
-      // Parse what arrived, or explain why there is nothing usable.
       const finish = (noAnswer: () => Error = () => new TimeoutError()) => {
         const data = Buffer.concat(chunks);
         if (data.length === 0) return settle(() => reject(noAnswer()));
