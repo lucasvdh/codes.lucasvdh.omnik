@@ -89,6 +89,8 @@ Good idea. I've added it as <GitHub issue link>. No promises on timing; a PR is 
 <Test link if Test.> If something isn't right, please send a diagnostic report and post the Log ID here.
 ```
 
+- Keep it short: a few bullets, then one line per person to mention. Users skim forum posts; a long post reads like release notes nobody asked for.
+- Mention only people whose report this release actually fixes, and say honestly what changed for them ("hidden because HTTP can't provide it", not "fixed"). Ask the ones who reported something you couldn't reproduce to try again.
 - The bullets come from the changelog. Leave out internal changes.
 - Mention new permissions (no auto-update) and anything users must do (re-pair, repair, adjust a Flow).
 - When a release fixes reports from the topic, quote or mention those posts so the reporters get notified.

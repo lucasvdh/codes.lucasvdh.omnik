@@ -15,7 +15,7 @@ Keep both in sync when a rule changes.
 - **Supported languages:** `en, nl, de, fr, it, sv, no, es, da, pl`. Every user-facing string exists in all of them.
 - **Community topic:** https://community.homey.app/t/94499 (`homeyCommunityTopicId` in the manifest).
 - **Store pages:** https://homey.app/a/codes.lucasvdh.omnik (live), https://homey.app/a/codes.lucasvdh.omnik/test (test).
-- **External API / protocol:** the WiFi module's binary protocol on TCP/8899 (`lib/omnik-tcp-client.ts`), with `/js/status.js` over HTTP/80 as fallback and for pairing (`lib/omnik-http-client.ts`). Background: `docs/en/protocols.md`.
+- **External API / protocol:** the WiFi module's binary protocol on TCP/8899 (`lib/omnik-tcp-client.ts`), with `/js/status.js` over HTTP/80 as fallback and for pairing (`lib/omnik-http-client.ts`). Reference: `docs/development/protocol.md` (frames, status.js fields, discovery); user-facing background in `docs/en/protocols.md`.
 - **Docs:** `docs/en/` and `docs/nl/` are the user-facing GitBook (homey-omnik.gitbook.io). The other files in `docs/` are contributor and agent docs.
 
 App-specific traps (keep this list current):
@@ -23,7 +23,7 @@ App-specific traps (keep this list current):
 - At night the inverter powers down for lack of DC voltage and takes the WiFi module with it. With the default `offline_behavior = keep_available` a failed poll means "off" (power 0, device stays available), not "unavailable". Don't change that default (`lib/production.ts`).
 - `meter_power` is the lifetime total. Never write 0 or null over an existing value: Insights reads that as a regression and breaks monthly totals. Daily and lifetime totals are left untouched when a poll fails.
 - Unset TCP sensors arrive as `0xFFFF` / `0xFFFFFFFF` / `-1`. The parser turns them into `NaN` and the device writes `null`. Never write the raw value (it shows up as 655.35 kWh).
-- HTTP mode has no voltage, frequency or temperature. Those capabilities stay `null`, which is expected.
+- HTTP mode has no voltage, frequency or temperature. Devices on HTTP don't have those capabilities; switching the protocol setting adds or removes them (`lib/capabilities.ts`).
 - `data.id` is the WiFi module S/N as a number and is the device identity. It must never change. The IP lives in settings.
 - Availability only changes on transitions and never throws: `setUnavailable` on every poll caused `SQLITE_FULL` crashes (#4, #6).
 - In `onSettings` the new values aren't persisted yet; `buildApi(newSettings)` takes them as overrides.
@@ -202,6 +202,6 @@ Details: `docs/release-process.md`.
 - `docs/testing-conventions.md`: test setup, what to test, fakes, regression tests, CI
 - `docs/homey-platform.md`: how Homey works (platforms, Node versions, sandbox, Compose, limits, Cloud vs Pro)
 - `docs/app-store-guidelines.md`: official store rules plus the unwritten ones that cause rejections
-- `docs/release-process.md`: versioning, changelog, channels, publishing
+- `docs/release-process.md`: versioning, changelog, channels, publishing (workflow, manual fallback)
 - `docs/agent-tooling.md`: Homey Developer MCP and Discourse MCP, what agents may and may not do
 - `docs/community-and-support.md`: forum topic conventions, reply templates, issue triage

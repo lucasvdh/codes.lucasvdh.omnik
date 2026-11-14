@@ -122,6 +122,8 @@ Never, without an explicit request:
 - Draft issue and PR comments in the conversation. Post them only when asked.
 - Write `@name` only for a real person you mean to notify. Put roles and code in backticks.
 - Never push to `main`, force-push shared branches, create releases or close issues without being asked.
+- **Stacked PRs** (GitHub's native stacks): create each PR with its base on the branch below. Add new work below the release PR and rebase the release onto it; push your own PR branches with `--force-with-lease`. Don't change a PR's base by hand: that drops it from the stack. Repair a stack with the REST API (`X-GitHub-Api-Version: 2026-03-10`): `POST /repos/{owner}/{repo}/stacks/{n}/unstack` and `POST /repos/{owner}/{repo}/stacks/{n}/add` with `{"pull_requests": [...]}` bottom to top. Check membership with the `stack` field of `GET /repos/{owner}/{repo}/pulls/{n}`.
+- Tags: use `git tag -m "vX.Y.Z" vX.Y.Z <sha>`. Maintainers often sign tags (`tag.gpgsign`), which fails for a tag without a message.
 
 ---
 
@@ -134,7 +136,11 @@ Never, without an explicit request:
 
 ---
 
-## 5. Other sources of truth
+## 5. The maintainer's network
+
+Never scan or probe a network (ping sweeps, broadcasts, port scans) without asking first, even to test discovery. The maintainer may not be at home, and the network the machine is on may belong to someone else.
+
+## 6. Other sources of truth
 
 - Official docs as Markdown: append `.md` to any https://apps.developer.homey.app URL. The index is https://apps.developer.homey.app/llms.txt. Prefer it over memory for API details.
 - SDK reference: https://apps-sdk-v3.developer.homey.app (class pages such as `Device.html`, `FlowCardTrigger.html`).

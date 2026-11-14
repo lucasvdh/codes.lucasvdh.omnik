@@ -147,6 +147,7 @@ function userMessage(homey: Homey, err: unknown): string {
 - Cache with TTLs and coalesce in-flight identical requests when several devices ask for the same data.
 - Self-signed TLS (local devices): scope `rejectUnauthorized: false` to that device's agent only, never process-wide (`NODE_TLS_REJECT_UNAUTHORIZED`).
 - Devices that can't handle concurrency get a per-device request queue (a promise-chain mutex).
+- **Raw TCP sockets:** settle the promise on `close` too, not only on `data`, `timeout` and `error`; a peer that hangs up without answering otherwise leaves it pending forever and freezes the poll loop. Collect chunks until a complete frame (or a short quiet period) instead of parsing the first `data` event, and add an overall deadline next to the idle timeout. Validate values that go into a binary frame (field width, sign) and throw instead of building a broken frame.
 - Clients are classes in `lib/` with injected config, logger and timers. They don't read Homey settings themselves.
 - Token handling: cache access tokens until shortly before `exp`, refresh single-flight, clear on 401/403, persist only what you need to (the refresh token, in app settings or the device store).
 
@@ -181,6 +182,7 @@ function userMessage(homey: Homey, err: unknown): string {
 - The settings page never receives a stored secret back in full.
 - Validate and bound all input from `api.ts`, pair views and Flow args. Treat device and cloud responses as untrusted.
 - Escape everything inserted into HTML in settings pages, pair views and widgets.
+- Diagnostic reports that users are asked to paste publicly (GitHub issues, the forum) redact secrets before they are shown: passwords and usernames from settings, and anything in raw device responses that looks like a Wi-Fi name or key, a token or a public IP address.
 - CI: SHA-pinned actions, `permissions: contents: read`, `persist-credentials: false`, `npm ci --ignore-scripts`, and never `pull_request_target`.
 
 ---

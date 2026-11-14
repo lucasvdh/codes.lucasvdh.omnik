@@ -66,16 +66,20 @@ On a branch `chore/release-x.y.z`:
 4. Run `npm run typecheck && npm run lint && npm test && npm run check-locales && npm run homey-validate`.
 5. Run `npm run homey-review -- --type update` and handle the findings.
 6. Commit `chore: release vX.Y.Z` (only version files and changelog), open a PR, merge.
-7. Tag `vX.Y.Z` on the merge commit and push the tag.
-8. Publish: `npm run homey-manifest && npx homey app publish` locally, logged in with `homey login`. It validates and uploads a Draft.
-9. In Developer Tools (or through the Developer MCP when the maintainer asks): release to Test, or submit for certification.
+7. Tag the merge commit with `git tag -m "vX.Y.Z" vX.Y.Z <sha>` (annotated, so signing works), push the tag, and create the GitHub release: What's new, Fixes, Requirements (minimum Homey version when it changed), Under the hood, and the list of commits since the previous tag.
+8. Publish: run the **Publish** GitHub workflow (`workflow_dispatch`). Fallback when the workflow isn't set up or fails: `npm run homey-manifest && npx homey app publish` locally, logged in with `homey login`. Both upload a Draft.
+9. In Developer Tools (or through the Developer MCP when the maintainer asks): release to Test, or submit for certification. Anything that could only be tested against fakes (discovery, pairing views, real devices) is checked on Test with a real Homey before Live.
 10. Draft the forum post for the release (`docs/community-and-support.md`). The maintainer posts it or approves it.
 
 Agents do steps 1–7 when asked to prepare a release. Steps 8–10 change public state: an agent does them only when the maintainer asks for that specific step.
 
-## 5. Why there is no publish workflow
+## 5. Publish workflow (recommended) and manual fallback
 
-This app has no GitHub publish workflow and no `HOMEY_PAT` repository secret. The Draft is uploaded with `homey app publish` from the maintainer's machine, and moving it to Test or Live or submitting it for certification happens in Developer Tools or through the Homey Developer MCP. That keeps a token with publish rights out of GitHub.
+`.github/workflows/publish.yml` is the suggested way to publish. It validates and uploads a Draft on manual dispatch, refuses a version without a tag, and runs the same way for every maintainer. It needs the repository secret `HOMEY_PAT`, a Personal Access Token from https://tools.developer.homey.app/me, and the environment `homey-app-store`.
+
+It deliberately doesn't bump versions or push commits. The version bump is a reviewed PR (step 6), so the workflow needs no write permissions on the repo.
+
+**Manual fallback:** an app may skip the workflow (no publish token in GitHub) or fall back to it when the workflow fails. Then publish from the maintainer's machine with `npm run homey-manifest && npx homey app publish` (logged in with `homey login`), and release to Test or Live in Developer Tools or through the Homey Developer MCP. When an app skips the workflow, delete `publish.yml` and say so in this section of the app's copy.
 
 ## 6. After the release
 

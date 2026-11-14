@@ -10,7 +10,7 @@
     "build": "tsc",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
     "lint": "eslint .",
-    "test": "tsc -p tsconfig.test.json && node --test --enable-source-maps \".test-build/tests/**/*.test.js\"",
+    "test": "tsc -p tsconfig.test.json && node --test --test-timeout=10000 --enable-source-maps \".test-build/tests/**/*.test.js\"",
     "test:coverage": "npm test -- --experimental-test-coverage",
     "check-locales": "node scripts/check-locales.mjs",
     "homey-manifest": "node -e \"require('fs').existsSync('app.json') || require('fs').copyFileSync('.homeycompose/app.json', 'app.json')\"",
