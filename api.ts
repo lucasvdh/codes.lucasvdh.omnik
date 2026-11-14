@@ -100,9 +100,8 @@ function runInBackground(
   // Best effort: if an emit fails, the settings page's watchdog reports the error.
   const emit = (event: string, payload: Record<string, unknown>) => {
     Promise.resolve()
-      .then(() => {
-        homey.api.realtime(event, { runId, ...payload });
-      })
+      // Returned so a rejection lands in .catch() if realtime() is async (typed as any).
+      .then(() => homey.api.realtime(event, { runId, ...payload }) as unknown)
       .catch((err: unknown) => homey.app.error(`[report] realtime emit ${event} failed`, err));
   };
 

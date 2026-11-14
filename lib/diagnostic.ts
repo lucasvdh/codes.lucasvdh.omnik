@@ -5,7 +5,16 @@ import { OmnikHttpApi } from "./omnik-http-client";
 import { OmnikLocalApi, OmnikProtocol, type InverterData } from "./omnik-tcp-client";
 
 // Settings keys whose value must never appear in a diagnostic report.
-const SECRET_SETTINGS_KEYS = new Set<string>(["http_password"]);
+const SECRET_SETTINGS_KEYS = new Set<string>(["http_user", "http_password"]);
+
+// status.js can contain the home Wi-Fi name and key and the public IP; users paste reports publicly.
+const SECRET_STATUS_VAR = /ssid|key|psk|pass|pwd|wan/i;
+
+export function redactStatusJs(body: string): string {
+  return body.replace(/(var\s+(\w+)\s*=\s*")([^"]*)(")/g, (match, prefix: string, name: string, _value, suffix: string) =>
+    SECRET_STATUS_VAR.test(name) ? `${prefix}<redacted>${suffix}` : match,
+  );
+}
 
 export interface ProbeResult {
   label: string;
@@ -317,10 +326,7 @@ async function probeRawStatusJs(
     statusCode: res.statusCode,
     contentType: res.contentType || undefined,
     bodyLength: res.body.length,
-    bodyPreview:
-      res.body.length > RAW_BODY_PREVIEW_LENGTH
-        ? `${res.body.slice(0, RAW_BODY_PREVIEW_LENGTH)}… (truncated, ${res.body.length} chars total)`
-        : res.body,
+    bodyPreview: truncate(redactStatusJs(res.body), RAW_BODY_PREVIEW_LENGTH),
     m2mMid: matchVar("m2mMid"),
     wlanMac: matchVar("wlanMac"),
     wifiFirmware: matchVar("version"),
@@ -671,4 +677,8 @@ function truncateForTable(text: string): string {
 
 function stripRaw(p: ProbeResult): ProbeResult {
   return { ...p, responseRaw: undefined };
+}
+
+function truncate(text: string, max: number): string {
+  return text.length > max ? `${text.slice(0, max)}… (truncated, ${text.length} chars total)` : text;
 }
