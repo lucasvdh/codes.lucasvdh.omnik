@@ -33,17 +33,22 @@ export function shouldWriteTotal(total: number, previousTotal: number | null): b
   return total > 0 || previousTotal == null;
 }
 
-export type PollFailureAction = "report_off" | "mark_unavailable";
+export type PollFailureAction = "keep_last" | "report_off" | "mark_unavailable";
+
+/** One failed poll (after its retry) is often a WiFi glitch; act only when the next one fails too. */
+export const FAILED_POLLS_BEFORE_OFF = 2;
 
 /**
  * keep_available (default): the inverter and its WiFi module power down at night, so an
- * unreachable inverter is treated as "off" (power 0) while the device is available.
+ * unreachable inverter is treated as "off" (power 0) while the device stays available.
  * Once the device is already unavailable, only a successful poll brings it back.
  */
 export function pollFailureAction(
   behavior: OfflineBehavior | undefined,
   available: boolean,
+  consecutiveFailures: number,
 ): PollFailureAction {
+  if (available && consecutiveFailures < FAILED_POLLS_BEFORE_OFF) return "keep_last";
   return (behavior ?? "keep_available") === "keep_available" && available
     ? "report_off"
     : "mark_unavailable";

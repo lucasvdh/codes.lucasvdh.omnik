@@ -41,6 +41,7 @@ interface DriverManifest {
 class OmnikLocal extends InverterDevice {
   private api?: InverterClient;
   private previousPower?: number;
+  private consecutiveFailures = 0;
 
   async onInit(): Promise<void> {
     this.log("[device] init");
@@ -160,6 +161,7 @@ class OmnikLocal extends InverterDevice {
           `[poller] ${data.currentPower}W, ${data.currentVoltage}V, ${data.currentFrequency}Hz, today=${data.dailyProduction}kWh, total=${data.totalProduction}kWh, ${data.currentTemperature}°C`,
         );
         await this.applyInverterData(data);
+        this.consecutiveFailures = 0;
         await this.markAvailable();
         return;
       } catch (error) {
@@ -177,11 +179,18 @@ class OmnikLocal extends InverterDevice {
   private async handlePollFailure(error: unknown): Promise<void> {
     const description = describeError(error);
     const behavior = this.getSetting("offline_behavior") as OfflineBehavior | undefined;
+    this.consecutiveFailures++;
+    const action = pollFailureAction(behavior, this.getAvailable(), this.consecutiveFailures);
+
+    if (action === "keep_last") {
+      this.log(`[poller] poll failed (${description}); keeping last values until the next poll`);
+      return;
+    }
 
     // Also when marking unavailable: a stale last reading would keep "is producing" true all night.
     await this.reportOff();
 
-    if (pollFailureAction(behavior, this.getAvailable()) === "report_off") {
+    if (action === "report_off") {
       this.log(`[poller] inverter unreachable (${description}); treating as off (power=0)`);
       return;
     }
