@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": ".test-build",
+    "rootDir": ".",
+    "sourceMap": true
+  },
+  "include": ["*.ts", "lib/**/*.ts", "drivers/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["node_modules", ".homeybuild", ".test-build"]
+}

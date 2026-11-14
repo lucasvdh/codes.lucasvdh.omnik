@@ -1,20 +1,30 @@
 {
   "name": "codes.lucasvdh.omnik",
   "version": "1.5.2",
+  "private": true,
   "main": "app.js",
   "engines": {
     "node": "22"
   },
   "scripts": {
-    "homey-validate": "homey app validate --level verified",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
+    "lint": "eslint .",
+    "test": "tsc -p tsconfig.test.json && node --test --enable-source-maps \".test-build/tests/**/*.test.js\"",
+    "test:coverage": "npm test -- --experimental-test-coverage",
+    "check-locales": "node scripts/check-locales.mjs",
     "homey-build": "homey app build",
-    "build": "tsc"
+    "homey-validate": "homey app validate --level verified",
+    "homey-review": "homey app review",
+    "homey-run": "homey app run"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
     "@types/node": "^22.10.0",
-    "homey": "^4.2.1",
-    "typescript": "^5.9.0"
+    "eslint": "^9.0.0",
+    "homey": "^4.6.3",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.0.0"
   }
 }
