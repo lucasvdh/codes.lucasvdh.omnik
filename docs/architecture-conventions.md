@@ -265,6 +265,7 @@ Actions throw on failure, with a localized message. Returning normally means suc
 - Use `registerMultipleCapabilityListener` with a debounce for groups of buttons or values that change together.
 - Capabilities that exist only for Insights (numeric shadow values) are fine. Set `preventTag` if they would clutter tokens.
 - Probe-dependent capabilities (only some models support them) are added or removed from the probe result in `onInit`, guarded by `hasCapability`.
+- The same goes for capabilities that depend on a transport or protocol setting: sync them in `onInit` and when that setting changes. Removing a capability that never had a value on that transport is safe; no Flow can use it.
 - `setCapabilityOptions` is expensive. Only call it when the options actually changed.
 
 ---
@@ -291,6 +292,10 @@ private schedulePoll(delayMs: number): void {
 - The generation counter makes a restarted loop (settings changed, reconnect) stop the old one, even when a poll is in flight.
 - The interval comes from a driver setting when users have reasons to change it. Give min/max and a hint about rate limits.
 - When several devices need the same remote data, poll once in the App or a shared client and fan out through an event feed (`lib/feed.ts` with subscribe/unsubscribe). Don't poll the same endpoint per device.
+- A poll requested from outside the loop (a settings change, a reconnect) goes **through** the loop: run now when idle, otherwise right after the running poll. Never call `poll()` directly from `onSettings`; two overlapping polls write values and fire triggers in the wrong order. Keep the loop Homey-free (`lib/poll-loop.ts` with an injected `TimerHost`) so this is unit tested.
+- One failed poll is often a network glitch. Act on N consecutive failures (two is usually enough) before writing "off" values, changing availability or firing triggers; otherwise users get stop/start trigger pairs in the middle of the day.
+- Devices that switch off on a schedule (solar inverters at night, devices on a timer) are not "broken" when unreachable. Offer an offline behaviour setting, default to "treat as off" (keep available, write 0 / null), and keep lifetime totals untouched.
+- Counters that the device only resets when it wakes up (energy today) are reset by the app at local midnight: compare the day of the last reading with today using `this.homey.clock.getTimezone()` and `Intl.DateTimeFormat`, never `Date#getDate()`.
 
 ### Long-lived connections
 
@@ -373,7 +378,8 @@ homey.api.realtime("myapp:job:done", { runId, result });
 homey.api.realtime("myapp:job:error", { runId, message: homey.__("settings.error.x") });
 ```
 
-  The settings page subscribes once with `Homey.on(...)` and filters by `runId`. This avoids the settings-API request timeout.
+  The settings page subscribes once with `Homey.on(...)` and filters by `runId`. This avoids the settings-API request timeout. Events can arrive before the POST callback returned the `runId`: buffer them while a start is in flight and replay the matching ones, or a fast job ends in the page's watchdog.
+- Return the result of `homey.api.realtime(...)` inside a promise chain (`.then(() => homey.api.realtime(...))`); it is typed `any`, and a rejection that isn't returned escapes the `.catch`.
 - Messages returned to the UI are localized on the server (`homey.__`), or returned as locale keys that the page translates.
 - Validate secrets server-side (`POST /test-api-key`). Browser `fetch` from the settings page hits CORS and leaks the key into page logs.
 
@@ -395,8 +401,10 @@ homey.api.realtime("myapp:job:error", { runId, message: homey.__("settings.error
 
 ## 11. Discovery
 
-- Declare strategies in `.homeycompose/discovery/` and link them from `driver.compose.json`. Reading a strategy by hand with `getStrategy()` is fine for merging several strategies during pairing, but the main one should be linked so Homey manages reachability.
-- Implement `onDiscoveryResult` (match by stable id), `onDiscoveryAvailable` (connect), `onDiscoveryAddressChanged` (update the store, reconnect) and `onDiscoveryLastSeenChanged` where useful.
+- Use Homey's strategies (mDNS-SD, SSDP, MAC) from `.homeycompose/discovery/`. Don't build your own broadcast or subnet scan next to them, even when a vendor tool does: it duplicates what Homey already does and is harder to review.
+- Normally link the strategy from `driver.compose.json` so Homey manages reachability, and implement `onDiscoveryResult` (match by stable id), `onDiscoveryAvailable` (connect), `onDiscoveryAddressChanged` (update settings or store, reconnect) and `onDiscoveryLastSeenChanged` where useful.
+- **Exception:** a linked strategy makes Homey manage availability. For devices that are routinely offline but must stay available (a solar inverter at night), read the strategy unlinked, the way Athom's own apps do: `this.homey.discovery.getStrategy(id)`, walk `getDiscoveryResults()`, listen to `strategy.on("result")` and `result.on("addressChanged")`. Explain the choice in `.homeyreview.md`.
+- **MAC strategy** for devices without mDNS or SSDP: prefixes are decimal byte arrays (`AC:CF:23` → `[172, 207, 35]`). Chip vendors share prefixes with many other products, so a result is a candidate that pairing still probes. The MAC is the result id; `data.id` usually isn't, so keep the device's MAC in the store (from the discovery result or `homey.arp.getMAC(ip)` with a timeout at pairing, learned after a successful poll for older devices) and match on that.
 - Prefer IPv4 when a device advertises both and the protocol is known to misbehave on IPv6.
 - Discovery is not available on Homey Cloud.
 

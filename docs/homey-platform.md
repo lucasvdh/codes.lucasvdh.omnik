@@ -108,7 +108,7 @@ From the docs: "Publishing breaking changes is in general not allowed."
 | `homey app add-github-workflows` | Scaffold Athom's workflows (we use our own, see `.github/`) |
 | `homey app manage` | Open the app in Developer Tools |
 
-CI only validates and needs no token. Publishing happens locally with `homey login` (see `docs/release-process.md`).
+CI authenticates with a Personal Access Token (`HOMEY_PAT`, from https://tools.developer.homey.app/me).
 
 ## 8. Crash reports and diagnostics
 

@@ -1,0 +1,52 @@
+name: Publish draft
+
+# Uploads the current commit as a Draft build to Homey Developer Tools.
+# Releasing to Test/Live or submitting for certification stays a manual step.
+# Requires repository secret HOMEY_PAT (https://tools.developer.homey.app/me).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Validate and publish draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: homey-app-store
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Refuse to publish an untagged version
+        run: |
+          version=$(node -p "require('./.homeycompose/app.json').version")
+          if ! git ls-remote --exit-code --tags origin "refs/tags/v${version}" >/dev/null; then
+            echo "::error::Tag v${version} does not exist. Merge the release PR and push the tag first."
+            exit 1
+          fi
+
+      # app.json is gitignored and the Homey CLI won't start without one.
+      - name: Seed app.json from the compose manifest
+        run: cp .homeycompose/app.json app.json
+
+      - name: Validate
+        uses: athombv/github-action-homey-app-validate@002b7273c2b86032cb20d9bf25a67c8daca13f2c # v1
+        with:
+          level: verified
+
+      - name: Publish
+        id: publish
+        uses: athombv/github-action-homey-app-publish@48be66b7f2f870c22b6117d7bb84dfa06c4fc309 # v1
+        with:
+          personal_access_token: ${{ secrets.HOMEY_PAT }}
+
+      - name: Link to the build
+        run: echo "Manage the build at ${{ steps.publish.outputs.url }}" >> "$GITHUB_STEP_SUMMARY"

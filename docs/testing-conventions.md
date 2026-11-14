@@ -18,7 +18,7 @@ No test framework dependency: `node:test` and `node:assert/strict` ship with Nod
     "rootDir": ".",
     "sourceMap": true
   },
-  "include": ["lib/**/*.ts", "drivers/**/*.ts", "tests/**/*.ts"]
+  "include": ["*.ts", "lib/**/*.ts", "drivers/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
 }
 ```
 
@@ -27,11 +27,13 @@ No test framework dependency: `node:test` and `node:assert/strict` ship with Nod
 ```json
 {
   "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit",
-  "test": "tsc -p tsconfig.test.json && node --test --enable-source-maps \".test-build/tests/**/*.test.js\"",
+  "test": "tsc -p tsconfig.test.json && node --test --test-timeout=10000 --enable-source-maps \".test-build/tests/**/*.test.js\"",
   "test:coverage": "npm test -- --experimental-test-coverage"
 }
 ```
 
+- `--test-timeout` makes a test that never settles fail instead of hanging CI. A hanging test usually means a real bug (a promise that never resolves); keep it as the regression test.
+- `scripts/**/*.ts` (developer probes) is in `tsconfig.test.json` so it is typechecked and linted; ESLint allows `console` there.
 - Tests live in `tests/`, mirroring `lib/` (`tests/lib/state-poller.test.ts`), or flat for small apps.
 - Only `*.test.ts` files run. Manual probes against real devices (`tests/manual/*.ts`) are fine for development but never run in CI and never contain real credentials or addresses.
 - `.test-build/` is in `.gitignore` and `.homeyignore`, and so is `/tests`.
