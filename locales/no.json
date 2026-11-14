@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Noe gikk galt. Prøv igjen."
+    "generic": "Noe gikk galt. Prøv igjen.",
+    "invalid_ip": "Skriv inn en gyldig IPv4-adresse, for eksempel 192.168.1.42.",
+    "invalid_wifi_sn": "Skriv inn S/N for WiFi-modulen som et tall med maksimalt 10 sifre, ikke større enn 4294967295."
   },
   "device": {
     "error": {

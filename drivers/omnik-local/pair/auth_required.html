@@ -39,6 +39,7 @@
     });
 
     document.getElementById("submit-auth").addEventListener("click", function () {
+        this.disabled = true; // the view reloads after probing; prevents a second discovery
         const user = document.getElementById("auth_user").value;
         const password = document.getElementById("auth_password").value;
         Homey.emit("submitAuth", { user, password });

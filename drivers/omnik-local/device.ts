@@ -2,6 +2,7 @@ import { describeError, isRetryable } from "../../lib/errors";
 import { InverterDevice } from "../../lib/inverter-device";
 import { OmnikHttpApi } from "../../lib/omnik-http-client";
 import { OmnikLocalApi, type InverterData } from "../../lib/omnik-tcp-client";
+import { normalizeIpv4, parseWifiSn } from "../../lib/validation";
 import {
   dailyProductionChanged,
   localDay,
@@ -83,12 +84,12 @@ class OmnikLocal extends InverterDevice {
         ? { user: settings.http_user, password: settings.http_password ?? "" }
         : undefined;
       this.log(`[device] using HTTP protocol${auth ? " with auth" : ""}`);
-      return new OmnikHttpApi({ address: settings.ip, auth });
+      return new OmnikHttpApi({ address: settings.ip.trim(), auth });
     }
 
-    const wifiSn = settings.wifi_sn ? Number(settings.wifi_sn) : data.id;
+    const wifiSn = parseWifiSn(settings.wifi_sn) ?? data.id;
     this.log(`[device] using TCP protocol (sn=${wifiSn})`);
-    return new OmnikLocalApi({ address: settings.ip, wifiSn });
+    return new OmnikLocalApi({ address: settings.ip.trim(), wifiSn });
   }
 
   private async migrateCapabilities(): Promise<void> {
@@ -122,6 +123,16 @@ class OmnikLocal extends InverterDevice {
   }
 
   async onSettings({ newSettings, changedKeys }: SettingsInput): Promise<void> {
+    if (changedKeys.includes("ip") && !normalizeIpv4(newSettings.ip)) {
+      throw new Error(this.homey.__("error.invalid_ip"));
+    }
+    const protocol = newSettings.protocol ?? (this.getSetting("protocol") as DeviceProtocol | undefined);
+    const snUsedForTcp = protocol !== "http" && Boolean(newSettings.wifi_sn);
+    const snChanged = changedKeys.includes("wifi_sn") || changedKeys.includes("protocol");
+    if (snChanged && snUsedForTcp && !parseWifiSn(newSettings.wifi_sn)) {
+      throw new Error(this.homey.__("error.invalid_wifi_sn"));
+    }
+
     if (changedKeys.some((k) => (CONNECTION_SETTING_KEYS as readonly string[]).includes(k))) {
       this.api = this.buildApi(newSettings);
       this.log(`[settings] connection settings changed (${changedKeys.join(", ")}), rebuilt client`);

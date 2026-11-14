@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Er is iets misgegaan. Probeer het opnieuw."
+    "generic": "Er is iets misgegaan. Probeer het opnieuw.",
+    "invalid_ip": "Vul een geldig IPv4-adres in, bijvoorbeeld 192.168.1.42.",
+    "invalid_wifi_sn": "Vul het S/N van de WiFi-module in als getal van maximaal 10 cijfers, niet groter dan 4294967295."
   },
   "device": {
     "error": {

@@ -48,11 +48,11 @@ export class InverterAsleepError extends Error {
   }
 }
 
-const UNREACHABLE_CODES = new Set(["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH"]);
+const UNREACHABLE_CODES = new Set(["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH", "EHOSTDOWN", "ENOTFOUND"]);
 
-/** Maps a socket error to HostUnreachableError when the code says the host is not there. */
 export function classifySocketError(error: NodeJS.ErrnoException): Error {
   const code = error.code ?? "";
+  if (code === "ETIMEDOUT") return new TimeoutError();
   return UNREACHABLE_CODES.has(code) ? new HostUnreachableError(code) : error;
 }
 

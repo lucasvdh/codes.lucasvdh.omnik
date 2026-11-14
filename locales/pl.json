@@ -1,6 +1,8 @@
 {
   "error": {
-    "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+    "invalid_ip": "Wpisz prawidłowy adres IPv4, na przykład 192.168.1.42.",
+    "invalid_wifi_sn": "Wpisz numer S/N modułu WiFi jako liczbę o maksymalnie 10 cyfrach, nie większą niż 4294967295."
   },
   "device": {
     "error": {
