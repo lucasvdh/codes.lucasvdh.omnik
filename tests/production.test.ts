@@ -59,17 +59,22 @@ describe("shouldWriteTotal", () => {
 });
 
 describe("pollFailureAction", () => {
-  it("treats an unreachable inverter as off by default (night shutdown)", () => {
-    assert.equal(pollFailureAction(undefined, true), "report_off");
-    assert.equal(pollFailureAction("keep_available", true), "report_off");
+  it("keeps the last values after a single failed poll (daytime glitch)", () => {
+    assert.equal(pollFailureAction(undefined, true, 1), "keep_last");
+    assert.equal(pollFailureAction("mark_unavailable", true, 1), "keep_last");
+  });
+
+  it("treats an unreachable inverter as off by default once polls keep failing (night shutdown)", () => {
+    assert.equal(pollFailureAction(undefined, true, 2), "report_off");
+    assert.equal(pollFailureAction("keep_available", true, 5), "report_off");
   });
 
   it("marks unavailable when the user chose the legacy behaviour", () => {
-    assert.equal(pollFailureAction("mark_unavailable", true), "mark_unavailable");
+    assert.equal(pollFailureAction("mark_unavailable", true, 2), "mark_unavailable");
   });
 
   it("does not flip an unavailable device back to 'off' on another failure", () => {
-    assert.equal(pollFailureAction("keep_available", false), "mark_unavailable");
+    assert.equal(pollFailureAction("keep_available", false, 3), "mark_unavailable");
   });
 });
 
