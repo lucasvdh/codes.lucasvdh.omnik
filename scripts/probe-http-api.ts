@@ -4,7 +4,7 @@
  * Run with:
  *   npx tsc && node .homeybuild/scripts/probe-http-api.js <ip> [user] [password]
  */
-import { OmnikHttpApi } from "../drivers/omnik-local/http-api";
+import { OmnikHttpApi } from "../lib/omnik-http-client";
 
 async function main() {
   const [ip, user, password] = process.argv.slice(2);
@@ -25,7 +25,7 @@ async function main() {
   console.log(JSON.stringify(data, null, 2));
 }
 
-main().catch((err) => {
-  console.error("✗", err.constructor.name, err.message);
+main().catch((err: unknown) => {
+  console.error("✗", err instanceof Error ? `${err.name}: ${err.message}` : String(err));
   process.exit(1);
 });

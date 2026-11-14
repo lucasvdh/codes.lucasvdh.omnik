@@ -3,7 +3,7 @@
  * Run with: npx ts-node scripts/probe-inverter.ts <ip> <wifi-sn>
  */
 import net from "net";
-import { OmnikLocalApi, OmnikProtocol } from "../drivers/omnik-local/api";
+import { OmnikLocalApi, OmnikProtocol } from "../lib/omnik-tcp-client";
 
 async function main() {
   const [ip, snArg] = process.argv.slice(2);

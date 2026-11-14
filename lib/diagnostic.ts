@@ -1,8 +1,8 @@
-import type Homey from "homey";
-import net from "net";
-import http from "http";
-import { OmnikLocalApi, OmnikProtocol, InverterData } from "./api";
-import { OmnikHttpApi } from "./http-api";
+import http from "node:http";
+import net from "node:net";
+import type HomeyDevice from "homey/lib/Device";
+import { OmnikHttpApi } from "./omnik-http-client";
+import { OmnikLocalApi, OmnikProtocol, type InverterData } from "./omnik-tcp-client";
 
 // Settings keys whose value must never appear in a diagnostic report.
 const SECRET_SETTINGS_KEYS = new Set<string>(["http_password"]);
@@ -77,7 +77,7 @@ interface ProbeRunner {
 export type ProgressCallback = (message: string) => void;
 
 export async function generateDeviceReport(opts: {
-  device: Homey.Device;
+  device: HomeyDevice;
   appVersion: string;
   homeyFirmwareVersion?: string;
   homeyPlatform?: string;
@@ -85,11 +85,13 @@ export async function generateDeviceReport(opts: {
   onProgress?: ProgressCallback;
 }): Promise<DiagnosticReport> {
   const { device, appVersion, homeyFirmwareVersion, homeyPlatform, network, onProgress } = opts;
-  const settings = device.getSettings() as Record<string, unknown>;
-  const ip = String(settings.ip ?? "");
+  const settings = device.getSettings() as Partial<
+    Record<"ip" | "wifi_sn" | "http_user" | "http_password", string>
+  >;
+  const ip = settings.ip ?? "";
   const wifiSn = settings.wifi_sn ? Number(settings.wifi_sn) : Number((device.getData() as { id?: number }).id);
   const auth = settings.http_user
-    ? { user: String(settings.http_user), password: String(settings.http_password ?? "") }
+    ? { user: settings.http_user, password: settings.http_password ?? "" }
     : undefined;
 
   const { probes, statusJs } = await runAllProbes({
@@ -143,7 +145,7 @@ export async function generateIpReport(opts: {
   };
 }
 
-function snapshotDevice(device: Homey.Device): DeviceSnapshot {
+function snapshotDevice(device: HomeyDevice): DeviceSnapshot {
   const data = device.getData() as { id?: number | string };
   const rawSettings = device.getSettings() as Record<string, unknown>;
   const settings: Record<string, unknown> = {};
@@ -162,7 +164,7 @@ function snapshotDevice(device: Homey.Device): DeviceSnapshot {
 
   const capabilities = device.getCapabilities().map((cap) => ({
     id: cap,
-    value: device.getCapabilityValue(cap),
+    value: device.getCapabilityValue(cap) as unknown,
   }));
 
   return {
@@ -362,7 +364,7 @@ function rawHttpGet(
       { host: ip, port: 80, path, headers, timeout: timeoutMs },
       (res) => {
         const chunks: Buffer[] = [];
-        res.on("data", (c) => chunks.push(c));
+        res.on("data", (c: Buffer) => chunks.push(c));
         res.on("end", () =>
           resolve({
             statusCode: res.statusCode ?? 0,
@@ -425,7 +427,7 @@ async function captureRawTcpFrame(
       try {
         socket.write(OmnikProtocol.buildRequest(wifiSn));
       } catch (err) {
-        settle(() => reject(err));
+        settle(() => reject(err instanceof Error ? err : new Error(String(err))));
       }
     });
     socket.connect(8899, ip);
@@ -666,6 +668,5 @@ function truncateForTable(text: string): string {
 }
 
 function stripRaw(p: ProbeResult): ProbeResult {
-  const { responseRaw: _, ...rest } = p;
-  return rest;
+  return { ...p, responseRaw: undefined };
 }
