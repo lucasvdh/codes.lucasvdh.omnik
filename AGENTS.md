@@ -11,7 +11,7 @@ Keep both in sync when a rule changes.
 - **App:** Omnik (`codes.lucasvdh.omnik`), Homey SDK v3, TypeScript, Node.js runtime.
 - **What it does:** reads power, energy, voltage, frequency and temperature from Omnik solar inverters on the local network, with Flow cards for production start/stop and thresholds.
 - **Platforms:** `local`. Connectivity: `lan`. One driver: `omnik-local`.
-- **Minimum Homey version:** `>=12.2.0`. Below 12.9.0 Homey Pro 2023 and mini run Node 18 and Pro 2016-2019 run older Node, so don't use Node 20+ only APIs until `compatibility` is raised to `>=12.9.0`.
+- **Minimum Homey version:** `>=12.9.0`. From 12.9.0 on every platform runs Node 22, which matches the `@tsconfig/node22` base and `engines`.
 - **Supported languages:** `en, nl, de, fr, it, sv, no, es, da, pl`. Every user-facing string exists in all of them.
 - **Community topic:** https://community.homey.app/t/94499 (`homeyCommunityTopicId` in the manifest).
 - **Store pages:** https://homey.app/a/codes.lucasvdh.omnik (live), https://homey.app/a/codes.lucasvdh.omnik/test (test).
