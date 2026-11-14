@@ -1,13 +1,13 @@
-import http from "http";
+import http from "node:http";
 import {
-  HostUnreachableError,
   InverterAsleepError,
-  InverterData,
   ParseError,
   TimeoutError,
   UnauthorizedError,
   UnexpectedResponseError,
-} from "./api";
+  classifySocketError,
+} from "./errors";
+import type { InverterData } from "./omnik-tcp-client";
 
 export interface HttpAuth {
   user: string;
@@ -57,19 +57,23 @@ interface StatusJsPayload {
 export class OmnikHttpApi {
   private readonly address: string;
   private readonly auth?: HttpAuth;
+  private readonly port: number;
   private readonly timeoutMs: number;
 
   constructor({
     address,
     auth,
+    port = 80,
     timeoutMs = 10_000,
   }: {
     address: string;
     auth?: HttpAuth;
+    port?: number;
     timeoutMs?: number;
   }) {
     this.address = address;
     this.auth = auth;
+    this.port = port;
     this.timeoutMs = timeoutMs;
   }
 
@@ -167,7 +171,7 @@ export class OmnikHttpApi {
       }
 
       const req = http.get(
-        { host: this.address, port: 80, path, headers, timeout: this.timeoutMs },
+        { host: this.address, port: this.port, path, headers, timeout: this.timeoutMs },
         (res) => {
           if (res.statusCode === 401) {
             res.resume();
@@ -180,7 +184,7 @@ export class OmnikHttpApi {
             return;
           }
           const chunks: Buffer[] = [];
-          res.on("data", (c) => chunks.push(c));
+          res.on("data", (c: Buffer) => chunks.push(c));
           res.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
           res.on("error", reject);
         }
@@ -190,16 +194,8 @@ export class OmnikHttpApi {
         req.destroy();
         reject(new TimeoutError());
       });
-      req.on("error", (err: NodeJS.ErrnoException) => {
-        const code = err.code ?? "";
-        if (code === "ECONNREFUSED" || code === "EHOSTUNREACH" || code === "ENETUNREACH") {
-          reject(new HostUnreachableError(code));
-        } else {
-          reject(err);
-        }
-      });
+      req.on("error", (err: NodeJS.ErrnoException) => reject(classifySocketError(err)));
     });
   }
 }
 
-export default OmnikHttpApi;

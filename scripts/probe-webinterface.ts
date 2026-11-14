@@ -47,7 +47,7 @@ async function fetchEndpoint(
       { host: ip, port: 80, path, headers, timeout: 5000 },
       (res) => {
         const chunks: Buffer[] = [];
-        res.on("data", (c) => chunks.push(c));
+        res.on("data", (c: Buffer) => chunks.push(c));
         res.on("end", () => {
           const body = Buffer.concat(chunks).toString("utf8");
           resolve({

@@ -1,51 +1,10 @@
-import net from "net";
-
-export class TimeoutError extends Error {
-  constructor() {
-    super("The connection timed out");
-  }
-}
-
-export class HostUnreachableError extends Error {
-  constructor(cause: string) {
-    super(`Could not reach inverter: ${cause}`);
-  }
-}
-
-export class UnauthorizedError extends Error {
-  constructor() {
-    super("Inverter web interface requires authentication");
-  }
-}
-
-export class UnexpectedResponseError extends Error {
-  constructor(response: string) {
-    super("Unexpected response from inverter: " + response);
-  }
-}
-
-export class ParseError extends Error {
-  constructor(cause: string) {
-    super("Failed to parse inverter data: " + cause);
-  }
-}
-
-/**
- * Raised when the WiFi module responds but no inverter is currently reporting
- * to it — typically because the inverter has shut itself down due to
- * insufficient DC voltage (night, dawn, heavy cloud). Distinct from ParseError
- * so the pairing / runtime layer can render a user-friendly message instead of
- * the generic "unsupported firmware" copy.
- */
-export class InverterAsleepError extends Error {
-  constructor(public readonly wifiStickSn?: string) {
-    super(
-      wifiStickSn
-        ? `WiFi module ${wifiStickSn} is reachable but no inverter data is available (inverter likely asleep)`
-        : "WiFi module is reachable but no inverter data is available (inverter likely asleep)",
-    );
-  }
-}
+import net from "node:net";
+import {
+  ParseError,
+  TimeoutError,
+  UnexpectedResponseError,
+  classifySocketError,
+} from "./errors";
 
 export interface InverterData {
   inverterName: string;
@@ -207,19 +166,14 @@ export class OmnikLocalApi {
       client.on("timeout", () => settle(() => reject(new TimeoutError())));
 
       client.on("error", (error: NodeJS.ErrnoException) => {
-        const code = error.code ?? "";
-        if (code === "ECONNREFUSED" || code === "EHOSTUNREACH" || code === "ENETUNREACH") {
-          settle(() => reject(new HostUnreachableError(code)));
-        } else {
-          settle(() => reject(error));
-        }
+        settle(() => reject(classifySocketError(error)));
       });
 
       client.on("ready", () => {
         try {
           client.write(OmnikProtocol.buildRequest(this.wifiSn));
         } catch (error) {
-          settle(() => reject(error));
+          settle(() => reject(error instanceof Error ? error : new Error(String(error))));
         }
       });
 
@@ -228,4 +182,3 @@ export class OmnikLocalApi {
   }
 }
 
-export default OmnikLocalApi;

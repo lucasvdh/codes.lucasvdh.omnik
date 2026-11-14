@@ -1,16 +1,19 @@
-"use strict";
-import { Driver } from "homey";
+import Homey from "homey";
+import type PairSession from "homey/lib/PairSession";
 import {
   HostUnreachableError,
   InverterAsleepError,
-  OmnikLocalApi,
   ParseError,
   TimeoutError,
   UnauthorizedError,
   UnexpectedResponseError,
-} from "./api";
-import { OmnikHttpApi, HttpAuth, DiscoveryInfo } from "./http-api";
-import { Device, DeviceProtocol } from "./types";
+  describeError,
+} from "../../lib/errors";
+import { OmnikHttpApi, type DiscoveryInfo, type HttpAuth } from "../../lib/omnik-http-client";
+import { OmnikLocalApi } from "../../lib/omnik-tcp-client";
+import type { Device, DeviceProtocol } from "../../lib/types";
+
+type DeviceArg = { device: Homey.Device };
 
 interface PairingState {
   ip: string | null;
@@ -20,7 +23,7 @@ interface PairingState {
   protocol: DeviceProtocol | null;
 }
 
-class OmnikLocal extends Driver {
+class OmnikLocal extends Homey.Driver {
   async onInit(): Promise<void> {
     this.registerFlowConditions();
   }
@@ -28,27 +31,27 @@ class OmnikLocal extends Driver {
   private registerFlowConditions(): void {
     this.homey.flow
       .getConditionCard("is_producing")
-      .registerRunListener(async ({ device }: { device: any }) => {
+      .registerRunListener(async ({ device }: DeviceArg) => {
         const power = device.getCapabilityValue("measure_power") as number | null;
         return typeof power === "number" && power > 0;
       });
 
     this.homey.flow
       .getConditionCard("power_above")
-      .registerRunListener(async ({ device, watts }: { device: any; watts: number }) => {
+      .registerRunListener(async ({ device, watts }: DeviceArg & { watts: number }) => {
         const power = device.getCapabilityValue("measure_power") as number | null;
         return typeof power === "number" && power > watts;
       });
 
     this.homey.flow
       .getConditionCard("daily_production_above")
-      .registerRunListener(async ({ device, kwh }: { device: any; kwh: number }) => {
+      .registerRunListener(async ({ device, kwh }: DeviceArg & { kwh: number }) => {
         const daily = device.getCapabilityValue("meter_power.daily") as number | null;
         return typeof daily === "number" && daily > kwh;
       });
   }
 
-  async onPair(session: any) {
+  async onPair(session: PairSession): Promise<void> {
     const state: PairingState = {
       ip: null,
       auth: null,
@@ -73,7 +76,7 @@ class OmnikLocal extends Driver {
     });
 
     session.setHandler("showView", async (view: string) => {
-      this.log("Show view", view);
+      this.log("[pair] show view", view);
 
       // When the user navigates back to the IP entry, drop the cached probe
       // results so the next attempt is a clean slate.
@@ -167,8 +170,8 @@ class OmnikLocal extends Driver {
       };
     });
 
-    session.setHandler("error", async (error: any) => {
-      this.log("session.setHandler(error)", error);
+    session.setHandler("error", async (error: unknown) => {
+      this.log("[pair] view reported error", error);
     });
 
     session.setHandler("add_device_error", async (error: string) => {
@@ -222,14 +225,14 @@ class OmnikLocal extends Driver {
           protocol: "tcp",
         };
       } catch (err) {
-        this.log(`TCP probe failed (${(err as Error).message}); using HTTP protocol`);
+        this.log(`[pair] TCP probe failed (${describeError(err)}); using HTTP protocol`);
       }
     }
 
     return { discovery, protocol: "http" };
   }
 
-  private async flashError(session: any, message: string, returnTo: string = "pair"): Promise<void> {
+  private async flashError(session: PairSession, message: string, returnTo = "pair"): Promise<void> {
     await session.showView(returnTo);
     await session.emit("alert", message);
   }

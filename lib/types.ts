@@ -43,3 +43,12 @@ export interface Device {
   data: DeviceData;
   settings: DeviceSettings;
 }
+
+/** Settings that change how the app connects; changing one rebuilds the client. */
+export const CONNECTION_SETTING_KEYS = [
+  "ip",
+  "protocol",
+  "wifi_sn",
+  "http_user",
+  "http_password",
+] as const satisfies ReadonlyArray<keyof DeviceSettings>;
