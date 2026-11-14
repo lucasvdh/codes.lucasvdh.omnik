@@ -43,12 +43,15 @@ Code-level rules for TypeScript Homey apps. For structure and lifecycle see `doc
 - Keep functions small and named after what they decide. A well-named function beats a comment.
 - Numbers with units get the unit in the name: `pollIntervalMs`, `timeoutSeconds`.
 
-### Comments
+### Self-documenting code and comments
 
-- Only where the code can't say it: a device or firmware quirk, the issue number behind a non-obvious choice, something this code must stay in step with, or a deliberate choice that looks like a mistake.
-- One or two lines. A long explanation belongs in `docs/development/<topic>.md`, with a link from the code.
-- No bug history ("this used to…", "previously caused…"). That goes in the commit message.
-- No comments that restate the code, no commented-out code, no TODOs without an issue number.
+Code documents itself. Names, types and small functions say what the code does and why it is shaped that way; a reader should not need a comment to follow it.
+
+- Before writing a comment, try to make it unnecessary: rename a variable, extract a function named after the decision (`shouldResetDaily`), introduce a constant with a unit (`RETRY_DELAY_MS`), or use a type instead of a convention.
+- A comment is allowed only when it adds context the code cannot carry and that would otherwise be missing: a device or firmware quirk, the issue number behind a non-obvious choice, something this code must stay in step with, or a deliberate choice that looks like a mistake.
+- Keep comments as short and to the point as possible: one line, two at most. A longer explanation belongs in `docs/development/<topic>.md`, with a link from the code.
+- No comments that restate the code, no bug history ("this used to…", "previously caused…"; that goes in the commit message), no commented-out code, no TODOs without an issue number.
+- When you change code, update or delete the comments next to it. A wrong comment is worse than none.
 
 ---
 

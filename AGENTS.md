@@ -96,7 +96,7 @@ Details, examples and the exceptions: `docs/architecture-conventions.md`.
 - File names: kebab-case in `lib/`. Driver ids and folders are `snake_case` or `kebab-case` without spaces; driver display names use spaces.
 - Dependencies: prefer Node built-ins (`fetch`, `https`, `crypto`). No `node-fetch` (it breaks on Node 22). No native addons. Every new runtime dependency needs a reason in the PR.
 - Logging: `this.log` for context that helps a diagnostic report, `this.error` for failures. Prefix log lines with a context tag (`[poller]`, `[pair]`). Never log secrets, tokens, PINs or full credentials.
-- Comments: only for context the code cannot express (a device quirk, an issue number, a deliberate choice that looks wrong). One or two lines. No bug history in comments; that goes in the commit.
+- Code documents itself: names, types and small well-named functions instead of explanations. Add a comment only when it adds context the code cannot express and that would otherwise be missing (a device quirk, an issue number, a deliberate choice that looks wrong). Keep it as short as possible, one or two lines. No bug history in comments; that goes in the commit.
 - No em-dashes (—) in user-facing text, changelogs or forum posts. Use a comma, a hyphen, or two sentences.
 
 Details: `docs/coding-standards.md`.
