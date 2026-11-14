@@ -122,7 +122,7 @@ class OmnikLocal extends InverterDevice {
       this.api = this.buildApi(newSettings);
       this.log(`[settings] connection settings changed (${changedKeys.join(", ")}), rebuilt client`);
       // Poll right away so the user sees the effect of the change.
-      this.checkProduction().catch((err) => this.error("[settings] immediate poll failed", err));
+      this.pollNow();
     }
 
     if (changedKeys.includes("interval") && newSettings.interval) {
