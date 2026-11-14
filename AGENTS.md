@@ -34,7 +34,7 @@ App-specific traps (keep this list current):
 
 ## Golden rules
 
-1. **Never hand-edit `app.json`.** It is generated from `.homeycompose/**` and `drivers/*/driver.*.compose.json`, and is gitignored. Edit the compose files; `npm run homey-build` (or any `homey app` command) regenerates it.
+1. **Never hand-edit `app.json`.** It is generated from `.homeycompose/**` and `drivers/*/driver.*.compose.json`, and is gitignored. Edit the compose files; `npm run homey-build` (or any `npm run homey-*` script) regenerates it. Use the npm scripts: bare `homey app ...` commands fail on a fresh clone because no `app.json` exists yet.
 2. **Every bug fix and every crash fix starts with a failing regression test.** No exceptions for "small" fixes. See [Bugs and crashes](#bugs-and-crashes).
 3. **No breaking changes for users.** Existing devices, Flow cards, capability ids, driver ids, setting keys and the app id are a contract. Migrate, don't rename. See `docs/architecture-conventions.md#migrations`.
 4. **No unhandled promise rejections.** Every promise is awaited, returned, or ends in `.catch(this.error)`. On Homey Cloud an unhandled rejection crashes the app, and Pro is following.

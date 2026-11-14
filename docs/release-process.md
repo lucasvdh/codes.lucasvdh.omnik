@@ -67,7 +67,7 @@ On a branch `chore/release-x.y.z`:
 5. Run `npm run homey-review -- --type update` and handle the findings.
 6. Commit `chore: release vX.Y.Z` (only version files and changelog), open a PR, merge.
 7. Tag `vX.Y.Z` on the merge commit and push the tag.
-8. Publish: `npx homey app publish` locally, logged in with `homey login`. It validates and uploads a Draft.
+8. Publish: `npm run homey-manifest && npx homey app publish` locally, logged in with `homey login`. It validates and uploads a Draft.
 9. In Developer Tools (or through the Developer MCP when the maintainer asks): release to Test, or submit for certification.
 10. Draft the forum post for the release (`docs/community-and-support.md`). The maintainer posts it or approves it.
 

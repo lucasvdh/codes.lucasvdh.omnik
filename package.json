@@ -13,10 +13,11 @@
     "test": "tsc -p tsconfig.test.json && node --test --enable-source-maps \".test-build/tests/**/*.test.js\"",
     "test:coverage": "npm test -- --experimental-test-coverage",
     "check-locales": "node scripts/check-locales.mjs",
-    "homey-build": "homey app build",
-    "homey-validate": "homey app validate --level verified",
-    "homey-review": "homey app review",
-    "homey-run": "homey app run"
+    "homey-manifest": "node -e \"require('fs').existsSync('app.json') || require('fs').copyFileSync('.homeycompose/app.json', 'app.json')\"",
+    "homey-build": "npm run homey-manifest && homey app build",
+    "homey-validate": "npm run homey-manifest && homey app validate --level verified",
+    "homey-review": "npm run homey-manifest && homey app review",
+    "homey-run": "npm run homey-manifest && homey app run"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",

@@ -54,11 +54,11 @@ Homey Compose generates `app.json` from `.homeycompose/` and the driver compose 
 
 - the compose files are the only source of truth, so nothing can drift;
 - PRs show the real change instead of a large duplicated manifest, and parallel branches don't conflict on it;
-- every CLI command that needs it (`run`, `build`, `validate`, `publish`, `review`) generates it first.
+- the CLI regenerates it on `run`, `build`, `validate`, `publish` and `review`, but refuses to start when no `app.json` exists at all. The `npm run homey-*` scripts seed it from `.homeycompose/app.json` first (`npm run homey-manifest`), and CI uses them.
 
 This deviates from most Homey repos, which commit it. Consequences:
 
-- after a fresh clone, run any `homey app` command (for example `npm run homey-build`) before reading `app.json` locally;
+- after a fresh clone, run `npm run homey-build` (or any other `npm run homey-*` script) before reading `app.json` locally, and use the npm scripts rather than bare `homey app ...` commands;
 - don't use `homey app version --commit` (it tries to stage `app.json`). Commit the version bump yourself;
 - to see the full manifest, look at `.homeycompose/` and `drivers/*/driver.*.compose.json`, or build it locally.
 
