@@ -33,27 +33,7 @@ interface StatusJsPayload {
   webData: string[];
 }
 
-/**
- * Fallback API for inverters that expose `/js/status.js` over HTTP/80 but not
- * the binary protocol on TCP/8899 (or as a richer-pairing companion to the
- * binary path: it carries the WiFi-stick S/N as `m2mMid`).
- *
- * Compared to the binary protocol we lose AC voltage, AC frequency, PV
- * voltages and the inverter temperature. Those fields surface as `NaN` and are
- * filtered out by the device layer's `Number.isFinite` guards.
- *
- * Field layout for `webData = "..."`, discovered via live probe and matched
- * against [klaasnicolaas/python-omnikinverter] / [robbinjanssen/...]:
- *   [0] inverter S/N (e.g. NLDN3020136R1029)
- *   [1] master firmware (e.g. NL1-V1.0-0061-4)
- *   [2] slave firmware  (e.g. V2.0-0024)
- *   [3] model name      (e.g. omnik3000tl)
- *   [4] rated power (W)
- *   [5] current AC power (W)
- *   [6] today's energy in 0.01 kWh units
- *   [7] lifetime energy in 0.1 kWh units
- *   [9] status flag (1 = idle / 2,3 = generating)
- */
+/** Reads `/js/status.js` over HTTP. Fields: docs/development/protocol.md. */
 export class OmnikHttpApi {
   private readonly address: string;
   private readonly auth?: HttpAuth;
@@ -107,9 +87,7 @@ export class OmnikHttpApi {
     try {
       return { meta, webData: this.extractWebData(body) };
     } catch (err) {
-      // When the WiFi stick is alive (m2mMid present) but no inverter data is
-      // exposed — typically `myDeviceArray = new Array();` with `yz_device_num`
-      // = "0" — the inverter is asleep, not the firmware unsupported.
+      // Module alive (m2mMid) but no inverter listed: asleep, not unsupported firmware.
       if (err instanceof ParseError && meta.m2mMid && this.isInverterAsleep(body)) {
         throw new InverterAsleepError(meta.m2mMid);
       }
@@ -149,10 +127,7 @@ export class OmnikHttpApi {
   }
 
   private extractWebData(body: string): string[] {
-    // The original Omnik firmware exposes a single comma-separated `webData`
-    // variable. Newer firmware (e.g. omnik5000tl2 with WiFi firmware
-    // H4.01.51MW, reported in issue #1) only exposes `myDeviceArray[0]="..."`
-    // with the same field layout. Try both.
+    // Older firmware has `webData`; newer firmware (H4.01.51MW, #1) only `myDeviceArray[0]`.
     const match =
       body.match(/webData\s*=\s*"([^"]*)"/) ??
       body.match(/myDeviceArray\s*\[\s*0\s*\]\s*=\s*"([^"]*)"/);
