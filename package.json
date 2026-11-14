@@ -22,7 +22,7 @@
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
     "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.12",
-    "@types/node": "^22.10.0",
+    "@types/node": "^26.6.6",
     "eslint": "^9.0.0",
     "homey": "^4.6.3",
     "typescript": "^5.9.0",
