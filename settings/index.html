@@ -151,17 +151,25 @@
       showStatus(kind, msg);
     }
 
-    Homey.on('omnik:report:progress', function (data) {
-      if (!activeRun || data.runId !== activeRun.runId) return;
-      showStatus('ok', data.message || t('settings.status.running'));
-    });
-    Homey.on('omnik:report:complete', function (data) {
-      if (!activeRun || data.runId !== activeRun.runId) return;
-      finishRun('ok', t('settings.status.report_ready'), data.markdown || '');
-    });
-    Homey.on('omnik:report:error', function (data) {
-      if (!activeRun || data.runId !== activeRun.runId) return;
-      finishRun('err', t('settings.status.report_failed', { error: data.message || t('settings.status.unknown_error') }));
+    const handlers = {
+      'omnik:report:progress': function (data) {
+        showStatus('ok', data.message || t('settings.status.running'));
+      },
+      'omnik:report:complete': function (data) {
+        finishRun('ok', t('settings.status.report_ready'), data.markdown || '');
+      },
+      'omnik:report:error': function (data) {
+        finishRun('err', t('settings.status.report_failed', { error: data.message || t('settings.status.unknown_error') }));
+      },
+    };
+    // Events can arrive before the POST callback has told us the runId; keep them until then.
+    let starting = false;
+    let early = [];
+    Object.keys(handlers).forEach(function (event) {
+      Homey.on(event, function (data) {
+        if (activeRun && data.runId === activeRun.runId) handlers[event](data);
+        else if (starting) early.push({ event: event, data: data });
+      });
     });
 
     function startRun(button, runningLabel, restoreLabel, call) {
@@ -175,7 +183,10 @@
       output.value = '';
       copyBtn.disabled = true;
       showStatus('ok', t('settings.status.starting'));
+      starting = true;
+      early = [];
       call(function (err, result) {
+        starting = false;
         if (err) {
           button.disabled = false;
           button.textContent = restoreLabel;
@@ -197,6 +208,11 @@
             finishRun('err', t('settings.status.timed_out', { seconds: WATCHDOG_MS / 1000 }));
           }, WATCHDOG_MS),
         };
+        const buffered = early;
+        early = [];
+        buffered.forEach(function (e) {
+          if (activeRun && e.data.runId === activeRun.runId) handlers[e.event](e.data);
+        });
       });
     }
 
