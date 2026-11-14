@@ -6,6 +6,9 @@ import {
   classifySocketError,
 } from "./errors";
 
+/** Answers this short are an error or acknowledgement, never a data frame. */
+const MIN_FRAME_BYTES = 70;
+
 export interface InverterData {
   inverterName: string;
   currentPower: number;
@@ -29,6 +32,10 @@ export class OmnikProtocol {
    *   [15]     terminator     0x16
    */
   static buildRequest(serialNumber: number): Buffer {
+    // The S/N is sent as 4 bytes; a larger value would silently produce a broken frame.
+    if (!Number.isInteger(serialNumber) || serialNumber <= 0 || serialNumber > 0xffffffff) {
+      throw new RangeError(`WiFi module S/N ${serialNumber} does not fit in 32 bits`);
+    }
     const buffer = Buffer.alloc(16);
     buffer[0] = 0x68;
     buffer[1] = 0x02;
@@ -112,44 +119,55 @@ export class OmnikLocalApi {
   private readonly wifiSn: number;
   private readonly port: number;
   private readonly timeoutMs: number;
+  private readonly collectMs: number;
 
   constructor({
     address,
     wifiSn,
     port = 8899,
     timeoutMs = 10000,
+    collectMs = 500,
   }: {
     address: string;
     wifiSn: number;
     port?: number;
     timeoutMs?: number;
+    /** Quiet time after the last chunk before the frame is parsed. */
+    collectMs?: number;
   }) {
     this.address = address;
     this.wifiSn = wifiSn;
     this.port = port;
     this.timeoutMs = timeoutMs;
+    this.collectMs = collectMs;
   }
 
   getData(): Promise<InverterData> {
     return new Promise((resolve, reject) => {
       const client = new net.Socket();
+      const chunks: Buffer[] = [];
       let settled = false;
+      let quietTimer: NodeJS.Timeout | undefined;
+      // The idle timeout resets on every chunk; this one bounds the whole exchange.
+      const deadline = setTimeout(() => finish(), this.timeoutMs * 2);
 
       const settle = (fn: () => void) => {
         if (settled) return;
         settled = true;
+        clearTimeout(deadline);
+        clearTimeout(quietTimer);
         client.destroy();
         fn();
       };
 
-      client.setTimeout(this.timeoutMs);
-
-      client.on("data", (data: Buffer) => {
+      // Parse what arrived, or explain why there is nothing usable.
+      const finish = (noAnswer: () => Error = () => new TimeoutError()) => {
+        const data = Buffer.concat(chunks);
+        if (data.length === 0) return settle(() => reject(noAnswer()));
+        if (data.length <= MIN_FRAME_BYTES) {
+          return settle(() => reject(new UnexpectedResponseError(data.toString("hex"))));
+        }
         try {
-          if (data.length <= 70) {
-            settle(() => reject(new UnexpectedResponseError(data.toString("hex"))));
-            return;
-          }
           const inverterData = OmnikProtocol.parseResponse(data);
           settle(() => resolve(inverterData));
         } catch (error) {
@@ -157,13 +175,28 @@ export class OmnikLocalApi {
             reject(
               error instanceof ParseError
                 ? error
-                : new ParseError(error instanceof Error ? error.message : String(error))
-            )
+                : new ParseError(error instanceof Error ? error.message : String(error)),
+            ),
           );
         }
+      };
+
+      client.setTimeout(this.timeoutMs);
+
+      // A frame can arrive in several chunks; parse once the stream has been quiet briefly.
+      client.on("data", (data: Buffer) => {
+        chunks.push(data);
+        clearTimeout(quietTimer);
+        quietTimer = setTimeout(() => finish(), this.collectMs);
       });
 
-      client.on("timeout", () => settle(() => reject(new TimeoutError())));
+      client.on("timeout", () => finish());
+
+      // Without this, a module that closes the connection without answering leaves the
+      // promise pending forever and stops the poll loop.
+      client.on("close", () =>
+        finish(() => new UnexpectedResponseError("connection closed without data")),
+      );
 
       client.on("error", (error: NodeJS.ErrnoException) => {
         settle(() => reject(classifySocketError(error)));

@@ -48,4 +48,41 @@ describe("OmnikLocalApi", () => {
     const api = new OmnikLocalApi({ address: "127.0.0.1", port: await closedPort(), wifiSn: SN });
     await assert.rejects(api.getData(), HostUnreachableError);
   });
+
+  it("rejects instead of hanging when the module closes without answering", async () => {
+    const server = await fakeTcpServer((_request, socket) => socket.end());
+    try {
+      const api = new OmnikLocalApi({ address: "127.0.0.1", port: server.port, wifiSn: SN, timeoutMs: 5000 });
+      const started = Date.now();
+      await assert.rejects(api.getData(), UnexpectedResponseError);
+      assert.ok(Date.now() - started < 2000, "settled on close, not on the idle timeout");
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("parses a frame that arrives in two chunks", async () => {
+    const frame = buildFrame({ powers: [640, 0, 0] });
+    const server = await fakeTcpServer((_request, socket) => {
+      socket.write(frame.subarray(0, 40));
+      setTimeout(() => socket.write(frame.subarray(40)), 30);
+    });
+    try {
+      const api = new OmnikLocalApi({ address: "127.0.0.1", port: server.port, wifiSn: SN });
+      const data = await api.getData();
+      assert.equal(data.currentPower, 640);
+    } finally {
+      await server.close();
+    }
+  });
+
+  it("reports a short answer as UnexpectedResponseError, not as a timeout", async () => {
+    const server = await fakeTcpServer((_request, socket) => socket.write(Buffer.alloc(20)));
+    try {
+      const api = new OmnikLocalApi({ address: "127.0.0.1", port: server.port, wifiSn: SN, timeoutMs: 200 });
+      await assert.rejects(api.getData(), UnexpectedResponseError);
+    } finally {
+      await server.close();
+    }
+  });
 });
