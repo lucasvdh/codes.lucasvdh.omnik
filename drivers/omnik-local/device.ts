@@ -1,4 +1,5 @@
 import { capabilityOptionsDiffer } from "../../lib/capability-options";
+import { capabilityChanges } from "../../lib/capabilities";
 import { describeError, isRetryable } from "../../lib/errors";
 import { type FollowsModuleAddress, movedAddress, normalizeMac } from "../../lib/mac";
 import { InverterDevice } from "../../lib/inverter-device";
@@ -28,8 +29,14 @@ const STORE_LAST_READING_DAY = "last_reading_day";
 const STORE_MAC = "mac";
 const MAX_ATTEMPTS = 2;
 
-const ADDED_IN_1_2_0 = ["measure_temperature", "meter_power.daily"];
-const ADDED_IN_1_4_0 = ["measure_frequency"];
+const CAPABILITIES = [
+  "measure_power",
+  "meter_power",
+  "meter_power.daily",
+  "measure_voltage",
+  "measure_frequency",
+  "measure_temperature",
+];
 const OPTIONS_SYNCED_IN_1_2_0 = ["meter_power", "meter_power.daily"];
 
 interface InverterClient {
@@ -98,13 +105,7 @@ class OmnikLocal extends InverterDevice implements FollowsModuleAddress {
   }
 
   private async migrateCapabilities(): Promise<void> {
-    for (const capability of [...ADDED_IN_1_2_0, ...ADDED_IN_1_4_0]) {
-      if (this.hasCapability(capability)) continue;
-      this.log(`[migrate] adding capability ${capability}`);
-      await this.addCapability(capability).catch((err) =>
-        this.error(`[migrate] failed to add ${capability}`, err),
-      );
-    }
+    await this.syncCapabilitiesWithProtocol((this.getSetting("protocol") as DeviceProtocol | undefined) ?? "tcp");
 
     // capabilitiesOptions in driver.compose.json only apply to new pairings; push them to
     // upgraded devices so the v1.2 titles show up.
@@ -129,6 +130,19 @@ class OmnikLocal extends InverterDevice implements FollowsModuleAddress {
     }
   }
 
+  /** Adds capabilities from newer versions; over HTTP the TCP-only readings are hidden. */
+  private async syncCapabilitiesWithProtocol(protocol: DeviceProtocol): Promise<void> {
+    const { add, remove } = capabilityChanges(protocol, this.getCapabilities(), CAPABILITIES);
+    for (const capability of remove) {
+      this.log(`[capabilities] removing ${capability} (not available over ${protocol})`);
+      await this.removeCapability(capability).catch((err) => this.error(`[capabilities] failed to remove ${capability}`, err));
+    }
+    for (const capability of add) {
+      this.log(`[capabilities] adding ${capability}`);
+      await this.addCapability(capability).catch((err) => this.error(`[capabilities] failed to add ${capability}`, err));
+    }
+  }
+
   async onSettings({ newSettings, changedKeys }: SettingsInput): Promise<void> {
     if (changedKeys.includes("ip") && !normalizeIpv4(newSettings.ip)) {
       throw new Error(this.homey.__("error.invalid_ip"));
@@ -138,6 +152,10 @@ class OmnikLocal extends InverterDevice implements FollowsModuleAddress {
     const snChanged = changedKeys.includes("wifi_sn") || changedKeys.includes("protocol");
     if (snChanged && snUsedForTcp && !parseWifiSn(newSettings.wifi_sn)) {
       throw new Error(this.homey.__("error.invalid_wifi_sn"));
+    }
+
+    if (changedKeys.includes("protocol") && newSettings.protocol) {
+      await this.syncCapabilitiesWithProtocol(newSettings.protocol);
     }
 
     if (changedKeys.some((k) => (CONNECTION_SETTING_KEYS as readonly string[]).includes(k))) {
