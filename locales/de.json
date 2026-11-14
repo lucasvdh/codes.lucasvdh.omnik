@@ -2,6 +2,11 @@
   "error": {
     "generic": "Etwas ist schiefgelaufen. Bitte erneut versuchen."
   },
+  "device": {
+    "error": {
+      "unreachable": "Der Wechselrichter ist nicht erreichbar (__reason__). Prüfen Sie, ob er eingeschaltet und mit dem Netzwerk verbunden ist."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Omnik-Wechselrichter",
@@ -14,7 +19,7 @@
       "auth_password": "Passwort",
       "auth_submit": "Weiter",
       "manual_title": "Seriennummer manuell eingeben",
-      "manual_explainer": "Die Seriennummer Ihres Wechselrichters konnte nicht automatisch erkannt werden. Suchen Sie den Aufkleber mit einer 10-stelligen Nummer — am externen WiFi-Stick oder direkt am Wechselrichter, falls dieser ein eingebautes WiFi-Modul hat. Beginnt meist mit 160, 161, 604 oder 646.",
+      "manual_explainer": "Die Seriennummer Ihres Wechselrichters konnte nicht automatisch erkannt werden. Suchen Sie den Aufkleber mit einer 10-stelligen Nummer, am externen WiFi-Stick oder direkt am Wechselrichter, falls dieser ein eingebautes WiFi-Modul hat. Beginnt meist mit 160, 161, 604 oder 646.",
       "manual_sn_label": "WiFi-Modul-Seriennummer",
       "manual_submit": "Erneut versuchen",
       "confirm_title": "Wechselrichter gefunden",
@@ -35,7 +40,7 @@
         "host_unreachable": "Konnte den Omnik-Wechselrichter unter dieser IP-Adresse nicht erreichen. Stellen Sie sicher, dass die IP-Adresse korrekt und der Wechselrichter eingeschaltet ist.",
         "connection_timed_out": "Es ist ein Timeout beim Verbinden mit Ihrem Omnik-Wechselrichter aufgetreten.",
         "unexpected_response": "Unerwartete Antwort vom Omnik-Wechselrichter erhalten. Die App unterstützt das Legacy-0x68-Protokoll auf TCP/8899 und den /js/status.js-HTTP-Fallback. Bitte teilen Sie Ihr Modell auf GitHub, wenn keines davon funktioniert.",
-        "inverter_asleep": "Das WiFi-Modul antwortet, aber es sind keine Wechselrichterdaten verfügbar. Der Wechselrichter befindet sich vermutlich im Ruhezustand — Omnik-Wechselrichter schalten sich bei unzureichendem Sonnenlicht ab. Versuchen Sie es erneut, sobald die Sonne aufgegangen ist und der Wechselrichter Strom erzeugt.",
+        "inverter_asleep": "Das WiFi-Modul antwortet, aber es sind keine Wechselrichterdaten verfügbar. Der Wechselrichter befindet sich vermutlich im Ruhezustand. Omnik-Wechselrichter schalten sich bei unzureichendem Sonnenlicht ab. Versuchen Sie es erneut, sobald die Sonne aufgegangen ist und der Wechselrichter Strom erzeugt.",
         "auth_failed": "Authentifizierung fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.",
         "adding_device": "Beim Hinzufügen des Geräts ist ein Fehler aufgetreten.\n\nEs könnte sein, dass der Wechselrichter bereits als Gerät hinzugefügt wurde."
       }

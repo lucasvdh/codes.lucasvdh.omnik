@@ -2,6 +2,11 @@
   "error": {
     "generic": "Coś poszło nie tak. Spróbuj ponownie."
   },
+  "device": {
+    "error": {
+      "unreachable": "Nie można połączyć się z falownikiem (__reason__). Sprawdź, czy jest włączony i podłączony do sieci."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Inwerter Omnik",
@@ -14,7 +19,7 @@
       "auth_password": "Hasło",
       "auth_submit": "Kontynuuj",
       "manual_title": "Wprowadź numer seryjny ręcznie",
-      "manual_explainer": "Nie udało się automatycznie wykryć numeru seryjnego inwertera. Znajdź naklejkę z 10-cyfrowym numerem — na zewnętrznym module WiFi lub na samym inwerterze, jeśli ma wbudowany moduł WiFi. Zwykle zaczyna się od 160, 161, 604 lub 646.",
+      "manual_explainer": "Nie udało się automatycznie wykryć numeru seryjnego inwertera. Znajdź naklejkę z 10-cyfrowym numerem, na zewnętrznym module WiFi lub na samym inwerterze, jeśli ma wbudowany moduł WiFi. Zwykle zaczyna się od 160, 161, 604 lub 646.",
       "manual_sn_label": "Numer seryjny modułu WiFi",
       "manual_submit": "Spróbuj ponownie",
       "confirm_title": "Znaleziono inwerter",
@@ -35,7 +40,7 @@
         "host_unreachable": "Nie można połączyć się z inwerterem Omnik pod tym adresem IP. Upewnij się, że adres IP jest poprawny i inwerter jest włączony.",
         "connection_timed_out": "Podczas próby połączenia z inwerterem Omnik wystąpił limit czasu.",
         "unexpected_response": "Otrzymano nieoczekiwana odpowiedź od inwertera Omnik. Aplikacja obsługuje starszy protokół 0x68 na TCP/8899 oraz fallback HTTP /js/status.js. Podziel się swoim modelem na GitHub, jeśli żaden nie działa.",
-        "inverter_asleep": "Moduł WiFi odpowiada, ale brak dostępnych danych falownika. Falownik prawdopodobnie jest uśpiony — falowniki Omnik wyłączają się przy niewystarczającym świetle słonecznym. Spróbuj ponownie, gdy wzejdzie słońce i falownik zacznie produkować.",
+        "inverter_asleep": "Moduł WiFi odpowiada, ale brak dostępnych danych falownika. Falownik prawdopodobnie jest uśpiony. Falowniki Omnik wyłączają się przy niewystarczającym świetle słonecznym. Spróbuj ponownie, gdy wzejdzie słońce i falownik zacznie produkować.",
         "auth_failed": "Uwierzytelnianie nie powiodło się. Sprawdź nazwę użytkownika i hasło.",
         "adding_device": "Coś poszło nie tak podczas dodawania urządzenia.\n\nMoże to oznaczać, że inwerter został już dodany jako urządzenie."
       }

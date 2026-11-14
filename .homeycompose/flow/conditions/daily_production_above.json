@@ -39,7 +39,15 @@
       "labelDecimals": 1,
       "placeholder": {
         "en": "kWh",
-        "nl": "kWh"
+        "nl": "kWh",
+        "de": "kWh",
+        "fr": "kWh",
+        "it": "kWh",
+        "sv": "kWh",
+        "no": "kWh",
+        "es": "kWh",
+        "da": "kWh",
+        "pl": "kWh"
       }
     }
   ]

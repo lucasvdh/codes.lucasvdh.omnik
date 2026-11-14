@@ -17,7 +17,15 @@
       "type": "number",
       "title": {
         "en": "Today (kWh)",
-        "nl": "Vandaag (kWh)"
+        "nl": "Vandaag (kWh)",
+        "de": "Heute (kWh)",
+        "fr": "Aujourd'hui (kWh)",
+        "it": "Oggi (kWh)",
+        "sv": "Idag (kWh)",
+        "no": "I dag (kWh)",
+        "es": "Hoy (kWh)",
+        "da": "I dag (kWh)",
+        "pl": "Dzisiaj (kWh)"
       },
       "example": 4.2
     }

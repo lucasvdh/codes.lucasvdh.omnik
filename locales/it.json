@@ -2,6 +2,11 @@
   "error": {
     "generic": "Qualcosa è andato storto. Riprova."
   },
+  "device": {
+    "error": {
+      "unreachable": "Impossibile raggiungere l'inverter (__reason__). Verifica che sia acceso e connesso alla rete."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Inverter Omnik",
@@ -14,7 +19,7 @@
       "auth_password": "Password",
       "auth_submit": "Continua",
       "manual_title": "Inserisci il numero di serie manualmente",
-      "manual_explainer": "Non è stato possibile rilevare automaticamente il numero di serie dell'inverter. Cerca l'adesivo con un numero a 10 cifre — sulla chiavetta WiFi esterna o sull'inverter stesso se ha un modulo WiFi integrato. Solitamente inizia con 160, 161, 604 o 646.",
+      "manual_explainer": "Non è stato possibile rilevare automaticamente il numero di serie dell'inverter. Cerca l'adesivo con un numero a 10 cifre, sulla chiavetta WiFi esterna o sull'inverter stesso se ha un modulo WiFi integrato. Solitamente inizia con 160, 161, 604 o 646.",
       "manual_sn_label": "S/N modulo WiFi",
       "manual_submit": "Riprova",
       "confirm_title": "Inverter trovato",
@@ -35,7 +40,7 @@
         "host_unreachable": "Impossibile raggiungere l'inverter Omnik all'indirizzo IP indicato. Assicurati che l'indirizzo IP sia corretto e l'inverter sia acceso.",
         "connection_timed_out": "Timeout durante la connessione al tuo inverter Omnik.",
         "unexpected_response": "Risposta inattesa dal tuo inverter Omnik. L'app supporta il protocollo legacy 0x68 su TCP/8899 e il fallback HTTP /js/status.js. Condividi il tuo modello su GitHub se nessuno dei due funziona.",
-        "inverter_asleep": "Il modulo WiFi risponde ma non sono disponibili dati dell'inverter. L'inverter è probabilmente in stand-by — gli inverter Omnik si spengono quando la luce solare è insufficiente. Riprova quando il sole sarà alto e l'inverter starà producendo.",
+        "inverter_asleep": "Il modulo WiFi risponde ma non sono disponibili dati dell'inverter. L'inverter è probabilmente in stand-by. Gli inverter Omnik si spengono quando la luce solare è insufficiente. Riprova quando il sole sarà alto e l'inverter starà producendo.",
         "auth_failed": "Autenticazione fallita. Verifica il nome utente e la password.",
         "adding_device": "Qualcosa è andato storto durante l'aggiunta del dispositivo.\n\nPotrebbe essere che l'inverter sia già stato aggiunto come dispositivo."
       }

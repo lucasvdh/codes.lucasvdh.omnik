@@ -30,7 +30,15 @@
       "type": "number",
       "title": {
         "en": "Power (W)",
-        "nl": "Vermogen (W)"
+        "nl": "Vermogen (W)",
+        "de": "Leistung (W)",
+        "fr": "Puissance (W)",
+        "it": "Potenza (W)",
+        "sv": "Effekt (W)",
+        "no": "Effekt (W)",
+        "es": "Potencia (W)",
+        "da": "Effekt (W)",
+        "pl": "Moc (W)"
       },
       "example": 250
     }

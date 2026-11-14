@@ -2,6 +2,11 @@
   "error": {
     "generic": "Noe gikk galt. Prøv igjen."
   },
+  "device": {
+    "error": {
+      "unreachable": "Får ikke kontakt med omformeren (__reason__). Sjekk at den er på og koblet til nettverket."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Omnik-inverter",
@@ -14,7 +19,7 @@
       "auth_password": "Passord",
       "auth_submit": "Fortsett",
       "manual_title": "Oppgi serienummer manuelt",
-      "manual_explainer": "Vi kunne ikke automatisk oppdage inverterens serienummer. Se etter klistremerket med et 10-sifret nummer — på den eksterne WiFi-pinnen eller på selve inverteren hvis den har en innebygd WiFi-modul. Begynner vanligvis med 160, 161, 604 eller 646.",
+      "manual_explainer": "Vi kunne ikke automatisk oppdage inverterens serienummer. Se etter klistremerket med et 10-sifret nummer, på den eksterne WiFi-pinnen eller på selve inverteren hvis den har en innebygd WiFi-modul. Begynner vanligvis med 160, 161, 604 eller 646.",
       "manual_sn_label": "WiFi-modul S/N",
       "manual_submit": "Prøv igjen",
       "confirm_title": "Inverter funnet",
@@ -35,7 +40,7 @@
         "host_unreachable": "Kunne ikke nå Omnik-inverteren på denne IP-adressen. Sørg for at IP-adressen er korrekt og inverteren er på.",
         "connection_timed_out": "Tidsavbrudd ved tilkobling til din Omnik-inverter.",
         "unexpected_response": "Mottok et uventet svar fra din Omnik-inverter. Appen støtter det eldre 0x68-protokollet på TCP/8899 og /js/status.js HTTP-reserve. Del gjerne din modell på GitHub hvis ingen av dem fungerer.",
-        "inverter_asleep": "WiFi-modulen svarer, men det finnes ingen omformerdata. Omformeren er sannsynligvis i hvilemodus — Omnik-omformere slår seg av ved utilstrekkelig sollys. Prøv igjen når solen er oppe og omformeren produserer.",
+        "inverter_asleep": "WiFi-modulen svarer, men det finnes ingen omformerdata. Omformeren er sannsynligvis i hvilemodus. Omnik-omformere slår seg av ved utilstrekkelig sollys. Prøv igjen når solen er oppe og omformeren produserer.",
         "auth_failed": "Autentisering mislyktes. Sjekk brukernavn og passord.",
         "adding_device": "Noe gikk galt under tillegg av enheten.\n\nDet kan være at inverteren allerede er lagt til som en enhet."
       }

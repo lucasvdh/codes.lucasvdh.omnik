@@ -2,6 +2,11 @@
   "error": {
     "generic": "Something went wrong. Please try again."
   },
+  "device": {
+    "error": {
+      "unreachable": "Cannot reach the inverter (__reason__). Check that it is on and connected to the network."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Omnik inverter",
@@ -14,7 +19,7 @@
       "auth_password": "Password",
       "auth_submit": "Continue",
       "manual_title": "Enter serial number manually",
-      "manual_explainer": "We could not auto-detect your inverter's serial number. Look for the sticker with a 10-digit number — on the external WiFi stick if you have one, or on the inverter itself if it has a built-in WiFi module. Usually starts with 160, 161, 604 or 646.",
+      "manual_explainer": "We could not auto-detect your inverter's serial number. Look for the sticker with a 10-digit number, on the external WiFi stick if you have one, or on the inverter itself if it has a built-in WiFi module. Usually starts with 160, 161, 604 or 646.",
       "manual_sn_label": "WiFi module S/N",
       "manual_submit": "Try again",
       "confirm_title": "Inverter found",
@@ -35,7 +40,7 @@
         "host_unreachable": "Could not reach the Omnik inverter at this IP address. Make sure the IP address is correct and the inverter is on.",
         "connection_timed_out": "A timeout occurred while connecting to your Omnik inverter.",
         "unexpected_response": "Received an unexpected response from your Omnik inverter. The app supports the legacy 0x68 protocol on TCP/8899 and the /js/status.js HTTP fallback. Please share your model on GitHub if neither works.",
-        "inverter_asleep": "The WiFi module is responding but no inverter data is available. The inverter is likely asleep — Omnik inverters power down when there is not enough sunlight. Try again when the sun is up and the inverter is producing.",
+        "inverter_asleep": "The WiFi module is responding but no inverter data is available. The inverter is likely asleep. Omnik inverters power down when there is not enough sunlight. Try again when the sun is up and the inverter is producing.",
         "auth_failed": "Authentication failed. Please check the username and password.",
         "adding_device": "Something went wrong while adding the device.\n\nIt might be that the inverter has already been added as a device."
       }

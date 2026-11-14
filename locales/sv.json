@@ -2,6 +2,11 @@
   "error": {
     "generic": "Något gick fel. Försök igen."
   },
+  "device": {
+    "error": {
+      "unreachable": "Det går inte att nå växelriktaren (__reason__). Kontrollera att den är på och ansluten till nätverket."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Omnik växelriktare",
@@ -14,7 +19,7 @@
       "auth_password": "Lösenord",
       "auth_submit": "Fortsätt",
       "manual_title": "Ange serienummer manuellt",
-      "manual_explainer": "Vi kunde inte automatiskt identifiera serienumret för din växelriktare. Leta efter etiketten med ett 10-siffrigt nummer — på den externa WiFi-stickan eller på själva växelriktaren om den har en inbyggd WiFi-modul. Börjar oftast med 160, 161, 604 eller 646.",
+      "manual_explainer": "Vi kunde inte automatiskt identifiera serienumret för din växelriktare. Leta efter etiketten med ett 10-siffrigt nummer, på den externa WiFi-stickan eller på själva växelriktaren om den har en inbyggd WiFi-modul. Börjar oftast med 160, 161, 604 eller 646.",
       "manual_sn_label": "WiFi-modulens S/N",
       "manual_submit": "Försök igen",
       "confirm_title": "Växelriktare hittad",
@@ -35,7 +40,7 @@
         "host_unreachable": "Kunde inte nå Omnik växelriktaren på denna IP-adress. Se till att IP-adressen är korrekt och att växelriktaren är på.",
         "connection_timed_out": "Ett timeout-fel uppstod när du anslöt till din Omnik växelriktare.",
         "unexpected_response": "Oväntat svar från din Omnik växelriktare. Appen stöder det äldre 0x68-protokollet på TCP/8899 och /js/status.js HTTP-reservalternativ. Dela din modell på GitHub om ingen av dem fungerar.",
-        "inverter_asleep": "WiFi-modulen svarar men det finns inga växelriktardata. Växelriktaren är troligen i viloläge — Omnik-växelriktare stänger av sig vid otillräckligt solljus. Försök igen när solen är uppe och växelriktaren producerar.",
+        "inverter_asleep": "WiFi-modulen svarar men det finns inga växelriktardata. Växelriktaren är troligen i viloläge. Omnik-växelriktare stänger av sig vid otillräckligt solljus. Försök igen när solen är uppe och växelriktaren producerar.",
         "auth_failed": "Autentisering misslyckades. Kontrollera användarnamn och lösenord.",
         "adding_device": "Något gick fel när enheten skulle läggas till.\n\nDet kan vara så att växelriktaren redan har lagts till som en enhet."
       }

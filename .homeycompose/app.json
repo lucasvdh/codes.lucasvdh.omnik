@@ -5,11 +5,28 @@
   "sdk": 3,
   "brandColor": "#eda328",
   "name": {
-    "en": "Omnik"
+    "en": "Omnik",
+    "nl": "Omnik",
+    "de": "Omnik",
+    "fr": "Omnik",
+    "it": "Omnik",
+    "sv": "Omnik",
+    "no": "Omnik",
+    "es": "Omnik",
+    "da": "Omnik",
+    "pl": "Omnik"
   },
   "description": {
     "en": "Let the sun power your home",
-    "nl": "Laat de zon je huis van stroom voorzien"
+    "nl": "Laat de zon je huis van stroom voorzien",
+    "de": "Lass die Sonne dein Zuhause mit Strom versorgen",
+    "fr": "Laissez le soleil alimenter votre maison",
+    "it": "Lascia che il sole alimenti la tua casa",
+    "sv": "Låt solen driva ditt hem",
+    "no": "La solen drive hjemmet ditt",
+    "es": "Deja que el sol alimente tu hogar",
+    "da": "Lad solen forsyne dit hjem med strøm",
+    "pl": "Niech słońce zasila twój dom"
   },
   "category": "energy",
   "platforms": [

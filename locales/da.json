@@ -2,6 +2,11 @@
   "error": {
     "generic": "Noget gik galt. Prøv igen."
   },
+  "device": {
+    "error": {
+      "unreachable": "Kan ikke nå inverteren (__reason__). Kontrollér, at den er tændt og forbundet til netværket."
+    }
+  },
   "pair": {
     "omnik-local": {
       "title": "Omnik inverter",
@@ -14,7 +19,7 @@
       "auth_password": "Adgangskode",
       "auth_submit": "Fortsæt",
       "manual_title": "Indtast serienummer manuelt",
-      "manual_explainer": "Vi kunne ikke automatisk registrere din inverters serienummer. Find klistermærket med et 10-cifret nummer — på den eksterne WiFi-pind eller på selve inverteren hvis den har et indbygget WiFi-modul. Begynder normalt med 160, 161, 604 eller 646.",
+      "manual_explainer": "Vi kunne ikke automatisk registrere din inverters serienummer. Find klistermærket med et 10-cifret nummer, på den eksterne WiFi-pind eller på selve inverteren hvis den har et indbygget WiFi-modul. Begynder normalt med 160, 161, 604 eller 646.",
       "manual_sn_label": "WiFi-modul S/N",
       "manual_submit": "Prøv igen",
       "confirm_title": "Inverter fundet",
@@ -35,7 +40,7 @@
         "host_unreachable": "Kunne ikke nå Omnik-inverteren på denne IP-adresse. Sørg for, at IP-adressen er korrekt, og inverteren er tændt.",
         "connection_timed_out": "Der opstod en timeout, mens der blev oprettet forbindelse til din Omnik-inverter.",
         "unexpected_response": "Modtog et uventet svar fra din Omnik-inverter. Appen understøtter det ældre 0x68-protokol på TCP/8899 og /js/status.js HTTP-reserve. Del gerne din model på GitHub, hvis ingen af dem virker.",
-        "inverter_asleep": "WiFi-modulet svarer, men der er ingen inverterdata til rådighed. Inverteren er sandsynligvis i dvale — Omnik-invertere slukker ved utilstrækkeligt sollys. Prøv igen, når solen er oppe og inverteren producerer.",
+        "inverter_asleep": "WiFi-modulet svarer, men der er ingen inverterdata til rådighed. Inverteren er sandsynligvis i dvale. Omnik-invertere slukker ved utilstrækkeligt sollys. Prøv igen, når solen er oppe og inverteren producerer.",
         "auth_failed": "Godkendelse mislykkedes. Tjek brugernavn og adgangskode.",
         "adding_device": "Noget gik galt under tilføjelse af enheden.\n\nDet kan være, at inverteren allerede er tilføjet som en enhed."
       }
