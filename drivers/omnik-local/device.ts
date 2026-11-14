@@ -1,3 +1,4 @@
+import { capabilityOptionsDiffer } from "../../lib/capability-options";
 import { describeError, isRetryable } from "../../lib/errors";
 import { InverterDevice } from "../../lib/inverter-device";
 import { OmnikHttpApi } from "../../lib/omnik-http-client";
@@ -116,6 +117,8 @@ class OmnikLocal extends InverterDevice {
       const opts = manifestOptions[capability];
       if (!opts) continue;
       try {
+        const current = this.getCapabilityOptions(capability) as Record<string, unknown> | undefined;
+        if (!capabilityOptionsDiffer(current, opts)) continue;
         await this.setCapabilityOptions(capability, opts);
       } catch (err) {
         this.error(`[migrate] failed to set options for ${capability}`, err);
