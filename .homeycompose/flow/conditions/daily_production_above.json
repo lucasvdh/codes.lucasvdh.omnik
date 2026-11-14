@@ -35,6 +35,18 @@
       "min": 0,
       "max": 1000,
       "step": 0.1,
+      "title": {
+        "en": "Energy",
+        "nl": "Energie",
+        "de": "Energie",
+        "fr": "Énergie",
+        "it": "Energia",
+        "sv": "Energi",
+        "no": "Energi",
+        "es": "Energía",
+        "da": "Energi",
+        "pl": "Energia"
+      },
       "label": "kWh",
       "labelDecimals": 1,
       "placeholder": {

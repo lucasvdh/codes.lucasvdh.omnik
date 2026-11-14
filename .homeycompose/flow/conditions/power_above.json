@@ -35,6 +35,18 @@
       "min": 0,
       "max": 20000,
       "step": 1,
+      "title": {
+        "en": "Power",
+        "nl": "Vermogen",
+        "de": "Leistung",
+        "fr": "Puissance",
+        "it": "Potenza",
+        "sv": "Effekt",
+        "no": "Effekt",
+        "es": "Potencia",
+        "da": "Effekt",
+        "pl": "Moc"
+      },
       "label": "W",
       "labelDecimals": 0,
       "placeholder": {
