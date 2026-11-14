@@ -3,9 +3,12 @@ import { InverterDevice } from "../../lib/inverter-device";
 import { OmnikHttpApi } from "../../lib/omnik-http-client";
 import { OmnikLocalApi, type InverterData } from "../../lib/omnik-tcp-client";
 import {
+  dailyProductionChanged,
+  localDay,
   pollFailureAction,
   productionTransition,
   readingOrNull,
+  shouldResetDaily,
   shouldWriteTotal,
 } from "../../lib/production";
 import {
@@ -18,6 +21,7 @@ import {
 } from "../../lib/types";
 
 const RETRY_DELAY_MS = 5000;
+const STORE_LAST_READING_DAY = "last_reading_day";
 const MAX_ATTEMPTS = 2;
 
 const ADDED_IN_1_2_0 = ["measure_temperature", "meter_power.daily"];
@@ -158,26 +162,38 @@ class OmnikLocal extends InverterDevice {
     await this.handlePollFailure(lastError);
   }
 
-  /**
-   * Daily and lifetime totals stay untouched on failure: they must not regress just because
-   * the inverter can't be reached. See lib/production.ts for the decision.
-   */
+  /** The lifetime total is never touched here; "today" only resets once a new day starts. */
   private async handlePollFailure(error: unknown): Promise<void> {
     const description = describeError(error);
     const behavior = this.getSetting("offline_behavior") as OfflineBehavior | undefined;
 
+    // Also when marking unavailable: a stale last reading would keep "is producing" true all night.
+    await this.reportOff();
+
     if (pollFailureAction(behavior, this.getAvailable()) === "report_off") {
       this.log(`[poller] inverter unreachable (${description}); treating as off (power=0)`);
-      await this.safeSetCapabilityValue("measure_power", 0);
-      this.fireProductionTransitionTriggers(0);
-      await this.safeSetCapabilityValue("measure_voltage", null);
-      await this.safeSetCapabilityValue("measure_frequency", null);
-      await this.safeSetCapabilityValue("measure_temperature", null);
       return;
     }
 
     this.error(`[poller] unavailable: ${description}`);
     await this.markUnavailable(this.homey.__("device.error.unreachable", { reason: description }));
+  }
+
+  private async reportOff(): Promise<void> {
+    await this.setIfChanged("measure_power", 0);
+    this.fireProductionTransitionTriggers(0);
+    await this.setIfChanged("measure_voltage", null);
+    await this.setIfChanged("measure_frequency", null);
+    await this.setIfChanged("measure_temperature", null);
+
+    const lastDay = this.getStoreValue(STORE_LAST_READING_DAY) as string | undefined;
+    if (shouldResetDaily(lastDay, this.today())) {
+      await this.setDailyProduction(0);
+    }
+  }
+
+  private today(): string {
+    return localDay(new Date(), this.homey.clock.getTimezone());
   }
 
   // Availability only changes on transitions and never throws: SQLITE_FULL from
@@ -209,20 +225,34 @@ class OmnikLocal extends InverterDevice {
     await this.safeSetCapabilityValue("measure_temperature", readingOrNull(data.currentTemperature));
 
     if (Number.isFinite(data.dailyProduction)) {
-      const previousDaily = this.getCapabilityValue("meter_power.daily") as number | null;
-      await this.safeSetCapabilityValue("meter_power.daily", data.dailyProduction);
-      if (previousDaily !== data.dailyProduction) {
-        this.homey.flow
-          .getDeviceTriggerCard("daily_production_changed")
-          .trigger(this, { daily_production: data.dailyProduction })
-          .catch((err) => this.error("[flow] failed to fire daily_production_changed", err));
-      }
+      await this.setDailyProduction(data.dailyProduction);
+    }
+    const today = this.today();
+    if (this.getStoreValue(STORE_LAST_READING_DAY) !== today) {
+      await this.setStoreValue(STORE_LAST_READING_DAY, today).catch((err) =>
+        this.error("[device] failed to store last reading day", err),
+      );
     }
 
     const previousTotal = this.getCapabilityValue("meter_power") as number | null;
     if (shouldWriteTotal(data.totalProduction, previousTotal)) {
       await this.safeSetCapabilityValue("meter_power", data.totalProduction);
     }
+  }
+
+  private async setDailyProduction(kwh: number): Promise<void> {
+    const previous = this.getCapabilityValue("meter_power.daily") as number | null;
+    const written = await this.safeSetCapabilityValue("meter_power.daily", kwh);
+    if (!written || !dailyProductionChanged(previous, kwh)) return;
+    this.homey.flow
+      .getDeviceTriggerCard("daily_production_changed")
+      .trigger(this, { daily_production: kwh })
+      .catch((err) => this.error("[flow] failed to fire daily_production_changed", err));
+  }
+
+  private async setIfChanged(capability: string, value: number | null): Promise<void> {
+    if (this.hasCapability(capability) && this.getCapabilityValue(capability) === value) return;
+    await this.safeSetCapabilityValue(capability, value);
   }
 
   private fireProductionTransitionTriggers(currentPower: number): void {
@@ -238,12 +268,15 @@ class OmnikLocal extends InverterDevice {
       .catch((err) => this.error(`[flow] failed to fire ${cardId}`, err));
   }
 
-  private async safeSetCapabilityValue(capability: string, value: number | null): Promise<void> {
-    if (!this.hasCapability(capability)) return;
+  /** Returns whether the value was written. */
+  private async safeSetCapabilityValue(capability: string, value: number | null): Promise<boolean> {
+    if (!this.hasCapability(capability)) return false;
     try {
       await this.setCapabilityValue(capability, value);
+      return true;
     } catch (err) {
       this.error(`[device] failed to set ${capability} = ${value}`, err);
+      return false;
     }
   }
 

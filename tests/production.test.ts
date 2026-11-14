@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  dailyProductionChanged,
+  localDay,
   pollFailureAction,
   productionTransition,
   readingOrNull,
+  shouldResetDaily,
   shouldWriteTotal,
 } from "../lib/production";
 
@@ -67,5 +70,35 @@ describe("pollFailureAction", () => {
 
   it("does not flip an unavailable device back to 'off' on another failure", () => {
     assert.equal(pollFailureAction("keep_available", false), "mark_unavailable");
+  });
+});
+
+describe("localDay", () => {
+  it("uses the Homey time zone, not UTC", () => {
+    const lateEvening = new Date("2026-06-01T22:30:00Z");
+    assert.equal(localDay(lateEvening, "UTC"), "2026-06-01");
+    assert.equal(localDay(lateEvening, "Europe/Amsterdam"), "2026-06-02");
+  });
+});
+
+describe("shouldResetDaily", () => {
+  it("resets the daily total once the last reading is from an earlier day", () => {
+    assert.equal(shouldResetDaily("2026-06-01", "2026-06-02"), true);
+  });
+
+  it("keeps it on the same day and before the first reading", () => {
+    assert.equal(shouldResetDaily("2026-06-02", "2026-06-02"), false);
+    assert.equal(shouldResetDaily(undefined, "2026-06-02"), false);
+  });
+});
+
+describe("dailyProductionChanged", () => {
+  it("does not fire for the first value of a new device", () => {
+    assert.equal(dailyProductionChanged(null, 1.2), false);
+  });
+
+  it("fires when the value changes", () => {
+    assert.equal(dailyProductionChanged(1.2, 1.3), true);
+    assert.equal(dailyProductionChanged(1.3, 1.3), false);
   });
 });

@@ -48,3 +48,26 @@ export function pollFailureAction(
     ? "report_off"
     : "mark_unavailable";
 }
+
+/** Calendar day (YYYY-MM-DD) in the Homey's time zone. */
+export function localDay(date: Date, timeZone: string): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+/**
+ * The inverter only resets "today" when it wakes up, so without this the previous day's
+ * value would stay on screen (and in conditions) from midnight until sunrise.
+ */
+export function shouldResetDaily(lastReadingDay: string | undefined, today: string): boolean {
+  return lastReadingDay !== undefined && lastReadingDay !== today;
+}
+
+/** The first value of a new device is a baseline, not a change. */
+export function dailyProductionChanged(previous: number | null, next: number): boolean {
+  return previous != null && previous !== next;
+}
