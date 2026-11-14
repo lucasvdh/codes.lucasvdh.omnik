@@ -39,7 +39,15 @@
       "labelDecimals": 0,
       "placeholder": {
         "en": "Watts",
-        "nl": "Watt"
+        "nl": "Watt",
+        "de": "Watt",
+        "fr": "Watts",
+        "it": "Watt",
+        "sv": "Watt",
+        "no": "Watt",
+        "es": "Vatios",
+        "da": "Watt",
+        "pl": "Waty"
       }
     }
   ]

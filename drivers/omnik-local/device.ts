@@ -177,7 +177,7 @@ class OmnikLocal extends InverterDevice {
     }
 
     this.error(`[poller] unavailable: ${description}`);
-    await this.markUnavailable(`Error retrieving data: ${description}`);
+    await this.markUnavailable(this.homey.__("device.error.unreachable", { reason: description }));
   }
 
   // Availability only changes on transitions and never throws: SQLITE_FULL from

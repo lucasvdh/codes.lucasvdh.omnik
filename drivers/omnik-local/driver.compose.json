@@ -1,6 +1,15 @@
 {
   "name": {
-    "en": "Omnik"
+    "en": "Omnik",
+    "nl": "Omnik",
+    "de": "Omnik",
+    "fr": "Omnik",
+    "it": "Omnik",
+    "sv": "Omnik",
+    "no": "Omnik",
+    "es": "Omnik",
+    "da": "Omnik",
+    "pl": "Omnik"
   },
   "platforms": [
     "local"
