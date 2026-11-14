@@ -17,6 +17,11 @@ describe("OmnikProtocol.buildRequest", () => {
     assert.equal(frame[14], sum & 0xff);
     assert.equal(frame[15], 0x16);
   });
+
+  it("refuses a serial number that doesn't fit in 32 bits instead of building a broken frame", () => {
+    assert.throws(() => OmnikProtocol.buildRequest(6041234567), RangeError);
+    assert.throws(() => OmnikProtocol.buildRequest(Number.NaN), RangeError);
+  });
 });
 
 describe("OmnikProtocol.parseResponse", () => {
